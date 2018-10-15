@@ -1,0 +1,527 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Tab卡片风格</title>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/layui.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/global.css" />
+<link rel="stylesheet" type="text/css" href="../script/layui/css/admin.css" />
+<script type="text/javascript" src="../script/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../script/layui/layui.js"></script>
+</head>
+<body class="layui-layout-body">
+  <div id="LAY_app" class=""><div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <!-- 头部区域 -->
+    <ul class="layui-nav layui-layout-left">
+      <li class="layui-nav-item layadmin-flexible" lay-unselect="">
+        <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+          <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+        </a>
+      </li>
+      <!--<li class="layui-nav-item layui-this layui-hide-xs layui-hide-sm layui-show-md-inline-block">
+        <a lay-href="" title="">控制台 </a>
+      </li>-->
+      <li class="layui-nav-item layui-hide-xs" lay-unselect="">
+        <a href="http://www.layui.com/admin/" target="_blank" title="前台">
+          <i class="layui-icon layui-icon-website"></i>
+        </a>
+      </li>
+      <li class="layui-nav-item" lay-unselect="">
+        <a href="javascript:;" layadmin-event="refresh" title="刷新">
+          <i class="layui-icon layui-icon-refresh-3"></i>
+        </a>
+      </li>
+    <span class="layui-nav-bar" style="left: 150px; top: 48px; width: 0px; opacity: 0;"></span></ul>
+    <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+      
+      <li class="layui-nav-item" lay-unselect="">
+        <a lay-href="app/message/" layadmin-event="message">
+          <i class="layui-icon layui-icon-notice"></i>
+          
+          <!-- 如果有新消息，则显示小圆点 -->
+          <script type="text/html" template="" lay-url="./json/message/new.js">
+          {{# if(d.data.newmsg){ }} 
+            <span class="layui-badge-dot"></span>
+          {{# } }}
+          </script>  <span class="layui-badge-dot"></span>  
+          
+        </a>
+      </li>
+      <li class="layui-nav-item layui-hide-xs" lay-unselect="">
+        <a href="javascript:;" layadmin-event="theme">
+          <i class="layui-icon layui-icon-theme"></i>
+        </a>
+      </li>
+      <li class="layui-nav-item layui-hide-xs" lay-unselect="">
+        <a href="javascript:;" layadmin-event="note">
+          <i class="layui-icon layui-icon-note"></i>
+        </a>
+      </li>
+      <li class="layui-nav-item" lay-unselect="">
+        <script type="text/html" template="" lay-url="./json/user/session.js" lay-done="layui.element.render('nav', 'layadmin-layout-right');">
+          <a href="javascript:;">
+            <cite>{{ d.data.username }}</cite>
+          </a>
+          <dl class="layui-nav-child">
+            <dd><a lay-href="set/base/website">基本资料</a></dd>
+            <dd><a lay-href="set/security/">安全设置</a></dd>
+            <hr>
+            <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
+          </dl>
+        </script> <a href="javascript:;"> <cite>贤心</cite> <span class="layui-nav-more"></span></a> <dl class="layui-nav-child layui-anim layui-anim-upbit"> <dd><a lay-href="set/base/website">基本资料</a></dd> <dd><a lay-href="set/security/">安全设置</a></dd> <hr> <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd> </dl> 
+      </li>
+      
+      <li class="layui-nav-item layui-hide-xs" lay-unselect="">
+        <a href="javascript:;" layadmin-event="about"><i class="layui-icon layui-icon-more-vertical"></i></a>
+      </li>
+      <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect="">
+        <a href="javascript:;" layadmin-event="more"><i class="layui-icon layui-icon-more-vertical"></i></a>
+      </li>
+    <span class="layui-nav-bar" style="left: 28px; top: 48px; width: 0px; opacity: 0;"></span></ul>
+  </div>
+  
+  <!-- 侧边菜单 -->
+  <div class="layui-side layui-side-menu">
+    <div class="layui-side-scroll">
+      <script type="text/html" template="" lay-url="./json/menu.js?v=3" lay-done="layui.element.render('nav', 'layadmin-system-side-menu');" id="TPL_layout">
+      
+        <div class="layui-logo" lay-href="">
+          <span>{{ layui.setter.name || 'layuiAdmin' }}</span>
+        </div>
+        
+        <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+        {{# 
+          var path =  layui.router().path
+          ,pathURL = layui.admin.correctRouter(path.join('/'))
+          ,dataName = layui.setter.response.dataName;
+          
+          layui.each(d[dataName], function(index, item){ 
+            var hasChildren = typeof item.list === 'object' && item.list.length > 0
+            ,classSelected = function(){
+              var match = path[0] == item.name || (index == 0 && !path[0]) 
+              || (item.jump && pathURL == layui.admin.correctRouter(item.jump));
+              if(match){
+                return hasChildren ? 'layui-nav-itemed' : 'layui-this';
+              }
+              return '';
+            }
+            ,url = (item.jump && typeof item.jump === 'string') ? item.jump : item.name;
+        }}
+          <li data-name="{{ item.name || '' }}" data-jump="{{ item.jump || '' }}" class="layui-nav-item {{ classSelected() }}">
+            <a href="javascript:;" {{ hasChildren ? '' : 'lay-href="'+ url +'"' }} lay-tips="{{ item.title }}" lay-direction="2">
+              <i class="layui-icon {{ item.icon }}"></i>
+              <cite>{{ item.title }}</cite>
+            </a>
+            {{# if(hasChildren){ }}
+              <dl class="layui-nav-child">
+              {{# layui.each(item.list, function(index2, item2){ 
+                var hasChildren2 = typeof item2.list == 'object' && item2.list.length > 0
+                ,classSelected2 = function(){
+                  var match = (path[0] == item.name && path[1] == item2.name) 
+                  || (item2.jump && pathURL == layui.admin.correctRouter(item2.jump));
+                  if(match){
+                    return hasChildren2 ? 'layui-nav-itemed' : 'layui-this';
+                  }
+                  return '';
+                }
+                ,url2 = (item2.jump && typeof item2.jump === 'string') 
+                  ? item2.jump 
+                : [item.name, item2.name, ''].join('/');
+              }}
+                <dd  data-name="{{ item2.name || '' }}"  data-jump="{{ item2.jump || '' }}" 
+                {{ classSelected2() ? ('class="'+ classSelected2() +'"') : '' }}>
+                  <a href="javascript:;" {{ hasChildren2 ? '' : 'lay-href="'+ url2 +'"' }}>{{ item2.title }}</a>
+                  {{# if(hasChildren2){ }}
+                    <dl class="layui-nav-child">
+                      {{# layui.each(item2.list, function(index3, item3){ 
+                        var match = (path[0] == item.name && path[1] == item2.name && path[2] == item3.name) 
+                        || (item3.jump && pathURL == layui.admin.correctRouter(item3.jump))
+                        ,url3 = (item3.jump && typeof item3.jump === 'string') 
+                          ? item3.jump 
+                        : [item.name, item2.name, item3.name].join('/')
+                      }}
+                        <dd data-name="{{ item3.name || '' }}"  data-jump="{{ item3.jump || '' }}" 
+                        {{ match ? 'class="layui-this"' : '' }}>
+                          <a href="javascript:;" lay-href="{{ url3 }}" {{ item3.iframe ? 'lay-iframe="true"' : '' }}>{{ item3.title }}</a>
+                        </dd>
+                      {{# }); }}
+                    </dl>
+                  {{# } }}
+                </dd>
+            {{# }); }}
+            </dl>
+            {{# } }}
+          </li>
+        {{# }); }}
+        </ul>
+      </script> <div class="layui-logo" lay-href=""> <span>layuiAdmin Pro</span> </div> <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">  <li data-name="component" data-jump="" class="layui-nav-item layui-nav-itemed"> <a href="javascript:;" lay-tips="组件" lay-direction="2"> <i class="layui-icon layui-icon-component"></i> <cite>组件</cite> <span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="grid" data-jump=""> <a href="javascript:;">栅格<span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="list" data-jump=""> <a href="javascript:;" lay-href="component/grid/list">等比例列表排列</a> </dd>  <dd data-name="mobile" data-jump=""> <a href="javascript:;" lay-href="component/grid/mobile">按移动端排列</a> </dd>  <dd data-name="mobile-pc" data-jump=""> <a href="javascript:;" lay-href="component/grid/mobile-pc">移动桌面端组合</a> </dd>  <dd data-name="all" data-jump=""> <a href="javascript:;" lay-href="component/grid/all">全端复杂组合</a> </dd>  <dd data-name="stack" data-jump=""> <a href="javascript:;" lay-href="component/grid/stack">低于桌面堆叠排列</a> </dd>  <dd data-name="speed-dial" data-jump=""> <a href="javascript:;" lay-href="component/grid/speed-dial">九宫格</a> </dd>  </dl>  </dd>  <dd data-name="button" data-jump=""> <a href="javascript:;" lay-href="component/button/">按钮</a>  </dd>  <dd data-name="form" data-jump=""> <a href="javascript:;">表单<span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="element" data-jump=""> <a href="javascript:;" lay-href="component/form/element">表单元素</a> </dd>  <dd data-name="group" data-jump=""> <a href="javascript:;" lay-href="component/form/group">表单组合</a> </dd>  </dl>  </dd>  <dd data-name="nav" data-jump=""> <a href="javascript:;" lay-href="component/nav/">导航</a>  </dd>  <dd data-name="tabs" data-jump=""> <a href="javascript:;" lay-href="component/tabs/">选项卡</a>  </dd>  <dd data-name="progress" data-jump=""> <a href="javascript:;" lay-href="component/progress/">进度条</a>  </dd>  <dd data-name="panel" data-jump=""> <a href="javascript:;" lay-href="component/panel/">面板</a>  </dd>  <dd data-name="badge" data-jump=""> <a href="javascript:;" lay-href="component/badge/">徽章</a>  </dd>  <dd data-name="timeline" data-jump=""> <a href="javascript:;" lay-href="component/timeline/">时间线</a>  </dd>  <dd data-name="anim" data-jump=""> <a href="javascript:;" lay-href="component/anim/">动画</a>  </dd>  <dd data-name="auxiliar" data-jump=""> <a href="javascript:;" lay-href="component/auxiliar/">辅助</a>  </dd>  <dd data-name="layer" data-jump=""> <a href="javascript:;">通用弹层<span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="list" data-jump=""> <a href="javascript:;" lay-href="component/layer/list">功能演示</a> </dd>  <dd data-name="special-demo" data-jump=""> <a href="javascript:;" lay-href="component/layer/special-demo">特殊示例</a> </dd>  <dd data-name="theme" data-jump=""> <a href="javascript:;" lay-href="component/layer/theme">风格定制</a> </dd>  </dl>  </dd>  <dd data-name="laydate" data-jump=""> <a href="javascript:;" lay-href="component/laydate/">日期时间</a>  </dd>  <dd data-name="table" data-jump=""> <a href="javascript:;" lay-href="component/table/">表格</a>  </dd>  <dd data-name="laypage" data-jump=""> <a href="javascript:;" lay-href="component/laypage/">分页</a>  </dd>  <dd data-name="upload" data-jump=""> <a href="javascript:;" lay-href="component/upload/">上传</a>  </dd>  <dd data-name="carousel" data-jump=""> <a href="javascript:;" lay-href="component/carousel/">轮播</a>  </dd>  <dd data-name="laytpl" data-jump=""> <a href="javascript:;" lay-href="component/laytpl/">模板引擎</a>  </dd>  <dd data-name="flow" data-jump=""> <a href="javascript:;" lay-href="component/flow/">流加载</a>  </dd>  <dd data-name="util" data-jump=""> <a href="javascript:;" lay-href="component/util/">工具</a>  </dd>  <dd data-name="code" data-jump=""> <a href="javascript:;" lay-href="component/code/">代码修饰</a>  </dd>  <dd data-name="layim" data-jump="senior/im/"> <a href="javascript:;" lay-href="senior/im/">即时聊天</a>  </dd>  </dl>  </li>  <li data-name="template" data-jump="" class="layui-nav-item"> <a href="javascript:;" lay-tips="模板" lay-direction="2"> <i class="layui-icon layui-icon-template"></i> <cite>模板</cite> <span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="user" data-jump=""> <a href="javascript:;">用户相关<span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="reg" data-jump="user/reg"> <a href="javascript:;" lay-href="user/reg">注册</a> </dd>  <dd data-name="login" data-jump="user/login"> <a href="javascript:;" lay-href="user/login">登入</a> </dd>  <dd data-name="forget" data-jump="user/forget"> <a href="javascript:;" lay-href="user/forget">忘记密码</a> </dd>  </dl>  </dd>  <dd data-name="tips" data-jump="" class="layui-nav-itemed"> <a href="javascript:;">提示页面<span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="404" data-jump=""> <a href="javascript:;" lay-href="template/tips/404">404</a> </dd>  <dd data-name="error" data-jump="" class=""> <a href="javascript:;" lay-href="template/tips/error">错误提示</a> </dd>  </dl>  </dd>  <dd data-name="" data-jump=""> <a href="javascript:;">内嵌页面<span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="" data-jump="/iframe/link/baidu"> <a href="javascript:;" lay-href="/iframe/link/baidu">百度一下</a> </dd>  <dd data-name="" data-jump="/iframe/link/layui"> <a href="javascript:;" lay-href="/iframe/link/layui">layui官网</a> </dd>  <dd data-name="" data-jump="/iframe/link/layuiAdmin"> <a href="javascript:;" lay-href="/iframe/link/layuiAdmin">layuiAdmin官网</a> </dd>  </dl>  </dd>  </dl>  </li>  <li data-name="app" data-jump="" class="layui-nav-item"> <a href="javascript:;" lay-tips="应用" lay-direction="2"> <i class="layui-icon layui-icon-app"></i> <cite>应用</cite> <span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="message" data-jump=""> <a href="javascript:;" lay-href="app/message/">消息中心</a>  </dd>  </dl>  </li>  <li data-name="senior" data-jump="" class="layui-nav-item"> <a href="javascript:;" lay-tips="高级" lay-direction="2"> <i class="layui-icon layui-icon-senior"></i> <cite>高级</cite> <span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="im" data-jump=""> <a href="javascript:;" lay-href="senior/im/">通讯系统</a>  </dd>  </dl>  </li>  <li data-name="user" data-jump="" class="layui-nav-item"> <a href="javascript:;" lay-tips="用户" lay-direction="2"> <i class="layui-icon layui-icon-user"></i> <cite>用户</cite> <span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="user" data-jump="" class="layui-nav-itemed"> <a href="javascript:;">用户<span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="list" data-jump="" class=""> <a href="javascript:;" lay-href="user/user/list">用户列表</a> </dd>  </dl>  </dd>  <dd data-name="administrators" data-jump=""> <a href="javascript:;">后台管理组<span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="list" data-jump=""> <a href="javascript:;" lay-href="user/administrators/list">管理员列表</a> </dd>  <dd data-name="role" data-jump=""> <a href="javascript:;" lay-href="user/administrators/role">角色管理</a> </dd>  </dl>  </dd>  </dl>  </li>  <li data-name="set" data-jump="" class="layui-nav-item"> <a href="javascript:;" lay-tips="设置" lay-direction="2"> <i class="layui-icon layui-icon-set"></i> <cite>设置</cite> <span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="base" data-jump=""> <a href="javascript:;">基本设置<span class="layui-nav-more"></span></a>  <dl class="layui-nav-child">  <dd data-name="website" data-jump=""> <a href="javascript:;" lay-href="set/base/website">系统设置</a> </dd>  <dd data-name="email" data-jump=""> <a href="javascript:;" lay-href="set/base/email">邮件服务</a> </dd>  </dl>  </dd>  <dd data-name="security" data-jump=""> <a href="javascript:;" lay-href="set/security/">安全设置</a>  </dd>  </dl>  </li>  <li data-name="get" data-jump="system/get" class="layui-nav-item"> <a href="javascript:;" lay-href="system/get" lay-tips="授权" lay-direction="2"> <i class="layui-icon layui-icon-auz"></i> <cite>授权</cite> </a>  </li>  <span class="layui-nav-bar" style="top: 0px; height: 56px; opacity: 1;"></span></ul> 
+    </div>
+  </div>
+  
+
+  <!-- 页面标签 -->
+  <script type="text/html" template="" lay-done="layui.element.render('nav', 'layadmin-pagetabs-nav')">
+    {{# if(layui.setter.pageTabs){ }}
+    <div class="layadmin-pagetabs" id="LAY_app_tabs">
+      <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+      <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+      <div class="layui-icon layadmin-tabs-control layui-icon-down">
+        <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+          <li class="layui-nav-item" lay-unselect>
+            <a href="javascript:;"></a>
+            <dl class="layui-nav-child layui-anim-fadein">
+              <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
+              <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
+              <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+            </dl>
+          </li>
+        </ul>
+      </div>
+      <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+        <ul class="layui-tab-title" id="LAY_app_tabsheader">
+          <li lay-id="/"><i class="layui-icon layui-icon-home"></i></li>
+        </ul>
+      </div>
+    </div>
+    {{# } }}
+  </script>  <div class="layadmin-pagetabs" id="LAY_app_tabs"> <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div> <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div> <div class="layui-icon layadmin-tabs-control layui-icon-down"> <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav"> <li class="layui-nav-item" lay-unselect=""> <a href="javascript:;"><span class="layui-nav-more"></span></a> <dl class="layui-nav-child layui-anim-fadein layui-anim layui-anim-upbit"> <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd> <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd> <dd layadmin-event="closeAllTabs" class=""><a href="javascript:;">关闭全部标签页</a></dd> </dl> </li> <span class="layui-nav-bar" style="left: 20px; top: 35px; width: 0px; opacity: 0;"></span></ul> </div> <div class="layui-tab" lay-unauto="" lay-allowclose="true" lay-filter="layadmin-layout-tabs"> <ul class="layui-tab-title" id="LAY_app_tabsheader"> <li lay-id="/" class="layui-this"><i class="layui-icon layui-icon-home"></i><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></li> </ul> </div> </div>  
+  
+  
+  <!-- 主体内容 -->
+  <div class="layui-body" id="LAY_app_body">
+    <div class="layadmin-tabsbody-item layui-show"><div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md8">
+      <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6">
+          <div class="layui-card">
+            <div class="layui-card-header">快捷方式</div>
+            <div class="layui-card-body">
+              
+              <div class="layui-carousel layadmin-carousel layadmin-shortcut" lay-anim="" lay-indicator="inside" lay-arrow="none" style="width: 100%; height: 280px;">
+                <div carousel-item="">
+                  <ul class="layui-row layui-col-space10 layui-this">
+                    <li class="layui-col-xs3">
+                      <a lay-href="component/layer/list">
+                        <i class="layui-icon layui-icon-website"></i>
+                        <cite>弹层</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="component/button/">
+                        <i class="layui-icon layui-icon-find-fill"></i>
+                        <cite>按钮</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="component/progress/">
+                        <i class="layui-icon layui-icon-loading-2"></i>
+                        <cite>进度条</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="component/grid/speed-dial">
+                        <i class="layui-icon layui-icon-home"></i>
+                        <cite>临时图标</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="component/panel/">
+                        <i class="layui-icon layui-icon-read"></i>
+                        <cite>面板</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="component/badge/">
+                        <i class="layui-icon layui-icon-tree"></i>
+                        <cite>徽章</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="component/timeline/">
+                        <i class="layui-icon layui-icon-console"></i>
+                        <cite>时间线</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="component/auxiliar/">
+                        <i class="layui-icon layui-icon-survey"></i>
+                        <cite>辅助</cite>
+                      </a>
+                    </li>
+                  </ul>
+                  <ul class="layui-row layui-col-space10">
+                    <li class="layui-col-xs3">
+                      <a lay-href="set/base/website">
+                        <i class="layui-icon layui-icon-set"></i>
+                        <cite>设置</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="set/base/website">
+                        <i class="layui-icon layui-icon-set"></i>
+                        <cite>设置</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="set/base/website">
+                        <i class="layui-icon layui-icon-set"></i>
+                        <cite>设置</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="set/base/website">
+                        <i class="layui-icon layui-icon-set"></i>
+                        <cite>设置</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="set/base/website">
+                        <i class="layui-icon layui-icon-set"></i>
+                        <cite>设置</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="set/base/website">
+                        <i class="layui-icon layui-icon-set"></i>
+                        <cite>设置</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="set/base/website">
+                        <i class="layui-icon layui-icon-set"></i>
+                        <cite>设置</cite>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a lay-href="set/base/website">
+                        <i class="layui-icon layui-icon-set"></i>
+                        <cite>设置</cite>
+                      </a>
+                    </li>
+                  </ul>
+                  
+                </div>
+              <div class="layui-carousel-ind"><ul><li class="layui-this"></li><li></li></ul></div><button class="layui-icon layui-carousel-arrow" lay-type="sub"></button><button class="layui-icon layui-carousel-arrow" lay-type="add"></button></div>
+              
+            </div>
+          </div>
+        </div>
+        <div class="layui-col-md6">
+          <div class="layui-card">
+            <div class="layui-card-header">待办事项</div>
+            <div class="layui-card-body">
+
+              <div class="layui-carousel layadmin-carousel layadmin-backlog" lay-anim="" lay-indicator="inside" lay-arrow="none" style="width: 100%; height: 280px;">
+                <div carousel-item="">
+                  <ul class="layui-row layui-col-space10 layui-this">
+                    <li class="layui-col-xs6">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>待审评论</h3>
+                        <p><cite>66</cite></p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs6">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>待审帖子</h3>
+                        <p><cite>12</cite></p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs6">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>待审商品</h3>
+                        <p><cite>99</cite></p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs6">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>待发货</h3>
+                        <p><cite>20</cite></p>
+                      </a>
+                    </li>
+                  </ul>
+                  <ul class="layui-row layui-col-space10">
+                    <li class="layui-col-xs6">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>待审友情链接</h3>
+                        <p><cite style="color: #FF5722;">5</cite></p>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              <div class="layui-carousel-ind"><ul><li class="layui-this"></li><li></li></ul></div><button class="layui-icon layui-carousel-arrow" lay-type="sub"></button><button class="layui-icon layui-carousel-arrow" lay-type="add"></button></div>
+            </div>
+          </div>
+        </div>
+        <div class="layui-col-md12">
+          <div class="layui-card">
+            <div class="layui-card-header">数据概览</div>
+            <div class="layui-card-body">
+              
+              <div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-dataview" lay-anim="fade" lay-indicator="inside" lay-arrow="none" style="width: 100%; height: 280px;">
+                <div carousel-item="" id="LAY-index-dataview">
+                  <div class="layui-this" _echarts_instance_="1520739700488" style="-webkit-tap-highlight-color: transparent; user-select: none; cursor: default; background-color: rgba(0, 0, 0, 0);"><div style="position: relative; overflow: hidden; width: 698px; height: 332px;"><div data-zr-dom-id="bg" class="zr-element" style="position: absolute; left: 0px; top: 0px; width: 698px; height: 332px; user-select: none;"></div><canvas width="698" height="332" data-zr-dom-id="0" class="zr-element" style="position: absolute; left: 0px; top: 0px; width: 698px; height: 332px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas><canvas width="698" height="332" data-zr-dom-id="1" class="zr-element" style="position: absolute; left: 0px; top: 0px; width: 698px; height: 332px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas><canvas width="698" height="332" data-zr-dom-id="_zrender_hover_" class="zr-element" style="position: absolute; left: 0px; top: 0px; width: 698px; height: 332px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas></div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              <div class="layui-carousel-ind"><ul><li class="layui-this"></li><li></li><li></li></ul></div><button class="layui-icon layui-carousel-arrow" lay-type="sub"></button><button class="layui-icon layui-carousel-arrow" lay-type="add"></button></div>
+              
+            </div>
+          </div>
+          <div class="layui-card">
+            <div class="layui-tab layui-tab-brief layadmin-latestData">
+              <ul class="layui-tab-title">
+                <li class="layui-this">今日热搜</li>
+                <li>今日热帖</li>
+              </ul>
+              <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                  <table id="LAY-index-topSearch"></table><div class="layui-form layui-border-box layui-table-view" lay-filter="LAY-table-9" style=" "><div class="layui-table-box"><div class="layui-table-header"><table cellspacing="0" cellpadding="0" border="0" class="layui-table" lay-skin="line"><thead><tr><th data-field="0" data-unresize="true"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers"><span></span></div></th><th data-field="keywords" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><span>关键词</span></div></th><th data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency"><span>搜索次数</span><span class="layui-table-sort layui-inline"><i class="layui-edge layui-table-sort-asc"></i><i class="layui-edge layui-table-sort-desc"></i></span></div></th><th data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums"><span>用户数</span><span class="layui-table-sort layui-inline"><i class="layui-edge layui-table-sort-asc"></i><i class="layui-edge layui-table-sort-desc"></i></span></div></th></tr></thead></table></div><div class="layui-table-body layui-table-main"><table cellspacing="0" cellpadding="0" border="0" class="layui-table" lay-skin="line"><tbody><tr data-index="0"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">1</div></td><td data-field="keywords" data-content="贤心是男是女" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><a href="https://www.baidu.com/s?wd=贤心是男是女" target="_blank" class="layui-table-link">贤心是男是女</a></div></td><td data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency">8520</div></td><td data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums">2216</div></td></tr><tr data-index="1"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">2</div></td><td data-field="keywords" data-content="Java程序员能找到女朋友吗" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><a href="https://www.baidu.com/s?wd=Java程序员能找到女朋友吗" target="_blank" class="layui-table-link">Java程序员能找到女朋友吗</a></div></td><td data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency">666</div></td><td data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums">333</div></td></tr><tr data-index="2"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">3</div></td><td data-field="keywords" data-content="此表格是静态模拟数据" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><a href="https://www.baidu.com/s?wd=此表格是静态模拟数据" target="_blank" class="layui-table-link">此表格是静态模拟数据</a></div></td><td data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency">666</div></td><td data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums">333</div></td></tr><tr data-index="3"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">4</div></td><td data-field="keywords" data-content="layui官方教程" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><a href="https://www.baidu.com/s?wd=layui官方教程" target="_blank" class="layui-table-link">layui官方教程</a></div></td><td data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency">666</div></td><td data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums">333</div></td></tr><tr data-index="4"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">5</div></td><td data-field="keywords" data-content="layui官方教程" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><a href="https://www.baidu.com/s?wd=layui官方教程" target="_blank" class="layui-table-link">layui官方教程</a></div></td><td data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency">666</div></td><td data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums">333</div></td></tr><tr data-index="5"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">6</div></td><td data-field="keywords" data-content="layui官方教程" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><a href="https://www.baidu.com/s?wd=layui官方教程" target="_blank" class="layui-table-link">layui官方教程</a></div></td><td data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency">666</div></td><td data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums">333</div></td></tr><tr data-index="6"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">7</div></td><td data-field="keywords" data-content="layui官方教程" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><a href="https://www.baidu.com/s?wd=layui官方教程" target="_blank" class="layui-table-link">layui官方教程</a></div></td><td data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency">666</div></td><td data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums">333</div></td></tr><tr data-index="7"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">8</div></td><td data-field="keywords" data-content="layui官方教程" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><a href="https://www.baidu.com/s?wd=layui官方教程" target="_blank" class="layui-table-link">layui官方教程</a></div></td><td data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency">666</div></td><td data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums">333</div></td></tr><tr data-index="8"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">9</div></td><td data-field="keywords" data-content="layui官方教程" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><a href="https://www.baidu.com/s?wd=layui官方教程" target="_blank" class="layui-table-link">layui官方教程</a></div></td><td data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency">666</div></td><td data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums">333</div></td></tr><tr data-index="9"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">10</div></td><td data-field="keywords" data-content="layui官方教程" data-minwidth="300"><div class="layui-table-cell laytable-cell-9-keywords"><a href="https://www.baidu.com/s?wd=layui官方教程" target="_blank" class="layui-table-link">layui官方教程</a></div></td><td data-field="frequency" data-minwidth="120"><div class="layui-table-cell laytable-cell-9-frequency">666</div></td><td data-field="userNums"><div class="layui-table-cell laytable-cell-9-userNums">333</div></td></tr></tbody></table></div><div class="layui-table-fixed layui-table-fixed-l"><div class="layui-table-header"><table cellspacing="0" cellpadding="0" border="0" class="layui-table" lay-skin="line"><thead><tr><th data-field="0" data-unresize="true"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers"><span></span></div></th></tr></thead></table></div><div class="layui-table-body" style="height: auto;"><table cellspacing="0" cellpadding="0" border="0" class="layui-table" lay-skin="line"><tbody><tr data-index="0"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">1</div></td></tr><tr data-index="1"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">2</div></td></tr><tr data-index="2"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">3</div></td></tr><tr data-index="3"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">4</div></td></tr><tr data-index="4"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">5</div></td></tr><tr data-index="5"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">6</div></td></tr><tr data-index="6"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">7</div></td></tr><tr data-index="7"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">8</div></td></tr><tr data-index="8"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">9</div></td></tr><tr data-index="9"><td data-field="0"><div class="layui-table-cell laytable-cell-9-0 laytable-cell-numbers">10</div></td></tr></tbody></table></div></div></div><div class="layui-table-page"><div id="layui-table-page9"><div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage-9"><a href="javascript:;" class="layui-laypage-prev layui-disabled" data-page="0"><i class="layui-icon"></i></a><span class="layui-laypage-curr"><em class="layui-laypage-em"></em><em>1</em></span><a href="javascript:;" data-page="2">2</a><a href="javascript:;" data-page="3">3</a><span class="layui-laypage-spr">…</span><a href="javascript:;" class="layui-laypage-last" title="尾页" data-page="10">10</a><a href="javascript:;" class="layui-laypage-next" data-page="2"><i class="layui-icon"></i></a><span class="layui-laypage-skip">到第<input type="text" min="1" value="1" class="layui-input">页<button type="button" class="layui-laypage-btn">确定</button></span><span class="layui-laypage-count">共 100 条</span><span class="layui-laypage-limits"><select lay-ignore=""><option value="10" selected="">10 条/页</option><option value="20">20 条/页</option><option value="30">30 条/页</option><option value="40">40 条/页</option><option value="50">50 条/页</option><option value="60">60 条/页</option><option value="70">70 条/页</option><option value="80">80 条/页</option><option value="90">90 条/页</option></select></span></div></div></div><style>.laytable-cell-9-0{ width: 40px; }.laytable-cell-9-keywords{ width: 300px; }.laytable-cell-9-frequency{ width: 218px; }.laytable-cell-9-userNums{ width: 218px; }</style></div>
+                </div>
+                <div class="layui-tab-item" style="">
+                  <table id="LAY-index-topCard"></table><div class="layui-form layui-border-box layui-table-view" lay-filter="LAY-table-10" style=" "><div class="layui-table-box"><div class="layui-table-header"><table cellspacing="0" cellpadding="0" border="0" class="layui-table" lay-skin="line"><thead><tr><th data-field="0" data-unresize="true"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers"><span></span></div></th><th data-field="title" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><span>标题</span></div></th><th data-field="username"><div class="layui-table-cell laytable-cell-10-username"><span>发帖者</span></div></th><th data-field="channel"><div class="layui-table-cell laytable-cell-10-channel"><span>类别</span></div></th><th data-field="crt"><div class="layui-table-cell laytable-cell-10-crt"><span>点击率</span><span class="layui-table-sort layui-inline"><i class="layui-edge layui-table-sort-asc"></i><i class="layui-edge layui-table-sort-desc"></i></span></div></th></tr></thead></table></div><div class="layui-table-body layui-table-main"><table cellspacing="0" cellpadding="0" border="0" class="layui-table" lay-skin="line"><tbody><tr data-index="0"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">1</div></td><td data-field="title" data-content="社区开始接受 “赞助商广告” 投放" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><a href="http://fly.layui.com/jie/15697/" target="_blank" class="layui-table-link">社区开始接受 “赞助商广告” 投放</a></div></td><td data-field="username"><div class="layui-table-cell laytable-cell-10-username">贤心</div></td><td data-field="channel"><div class="layui-table-cell laytable-cell-10-channel">公告</div></td><td data-field="crt"><div class="layui-table-cell laytable-cell-10-crt">61632</div></td></tr><tr data-index="1"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">2</div></td><td data-field="title" data-content="layui 一周年" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><a href="http://fly.layui.com/jie/16622/" target="_blank" class="layui-table-link">layui 一周年</a></div></td><td data-field="username"><div class="layui-table-cell laytable-cell-10-username">猫吃</div></td><td data-field="channel"><div class="layui-table-cell laytable-cell-10-channel">讨论</div></td><td data-field="crt"><div class="layui-table-cell laytable-cell-10-crt">61632</div></td></tr><tr data-index="2"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">3</div></td><td data-field="title" data-content="四个月的前端" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><a href="http://fly.layui.com/jie/16651/" target="_blank" class="layui-table-link">四个月的前端</a></div></td><td data-field="username"><div class="layui-table-cell laytable-cell-10-username">fd</div></td><td data-field="channel"><div class="layui-table-cell laytable-cell-10-channel">分享</div></td><td data-field="crt"><div class="layui-table-cell laytable-cell-10-crt">61632</div></td></tr><tr data-index="3"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">4</div></td><td data-field="title" data-content="如何评价LayUI和他的作者闲心" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><a href="http://fly.layui.com/jie/9352/" target="_blank" class="layui-table-link">如何评价LayUI和他的作者闲心</a></div></td><td data-field="username"><div class="layui-table-cell laytable-cell-10-username">纸飞机</div></td><td data-field="channel"><div class="layui-table-cell laytable-cell-10-channel">提问</div></td><td data-field="crt"><div class="layui-table-cell laytable-cell-10-crt">61632</div></td></tr><tr data-index="4"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">5</div></td><td data-field="title" data-content="如何评价LayUI和他的作者闲心" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><a href="http://fly.layui.com/jie/9352/" target="_blank" class="layui-table-link">如何评价LayUI和他的作者闲心</a></div></td><td data-field="username"><div class="layui-table-cell laytable-cell-10-username">纸飞机</div></td><td data-field="channel"><div class="layui-table-cell laytable-cell-10-channel">提问</div></td><td data-field="crt"><div class="layui-table-cell laytable-cell-10-crt">61632</div></td></tr><tr data-index="5"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">6</div></td><td data-field="title" data-content="如何评价LayUI和他的作者闲心" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><a href="http://fly.layui.com/jie/9352/" target="_blank" class="layui-table-link">如何评价LayUI和他的作者闲心</a></div></td><td data-field="username"><div class="layui-table-cell laytable-cell-10-username">纸飞机</div></td><td data-field="channel"><div class="layui-table-cell laytable-cell-10-channel">提问</div></td><td data-field="crt"><div class="layui-table-cell laytable-cell-10-crt">61632</div></td></tr><tr data-index="6"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">7</div></td><td data-field="title" data-content="如何评价LayUI和他的作者闲心" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><a href="http://fly.layui.com/jie/9352/" target="_blank" class="layui-table-link">如何评价LayUI和他的作者闲心</a></div></td><td data-field="username"><div class="layui-table-cell laytable-cell-10-username">纸飞机</div></td><td data-field="channel"><div class="layui-table-cell laytable-cell-10-channel">提问</div></td><td data-field="crt"><div class="layui-table-cell laytable-cell-10-crt">61632</div></td></tr><tr data-index="7"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">8</div></td><td data-field="title" data-content="如何评价LayUI和他的作者闲心" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><a href="http://fly.layui.com/jie/9352/" target="_blank" class="layui-table-link">如何评价LayUI和他的作者闲心</a></div></td><td data-field="username"><div class="layui-table-cell laytable-cell-10-username">纸飞机</div></td><td data-field="channel"><div class="layui-table-cell laytable-cell-10-channel">提问</div></td><td data-field="crt"><div class="layui-table-cell laytable-cell-10-crt">61632</div></td></tr><tr data-index="8"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">9</div></td><td data-field="title" data-content="如何评价LayUI和他的作者闲心" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><a href="http://fly.layui.com/jie/9352/" target="_blank" class="layui-table-link">如何评价LayUI和他的作者闲心</a></div></td><td data-field="username"><div class="layui-table-cell laytable-cell-10-username">纸飞机</div></td><td data-field="channel"><div class="layui-table-cell laytable-cell-10-channel">提问</div></td><td data-field="crt"><div class="layui-table-cell laytable-cell-10-crt">61632</div></td></tr><tr data-index="9"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">10</div></td><td data-field="title" data-content="如何评价LayUI和他的作者闲心" data-minwidth="300"><div class="layui-table-cell laytable-cell-10-title"><a href="http://fly.layui.com/jie/9352/" target="_blank" class="layui-table-link">如何评价LayUI和他的作者闲心</a></div></td><td data-field="username"><div class="layui-table-cell laytable-cell-10-username">纸飞机</div></td><td data-field="channel"><div class="layui-table-cell laytable-cell-10-channel">提问</div></td><td data-field="crt"><div class="layui-table-cell laytable-cell-10-crt">61632</div></td></tr></tbody></table></div><div class="layui-table-fixed layui-table-fixed-l"><div class="layui-table-header"><table cellspacing="0" cellpadding="0" border="0" class="layui-table" lay-skin="line"><thead><tr><th data-field="0" data-unresize="true"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers"><span></span></div></th></tr></thead></table></div><div class="layui-table-body" style="height: auto;"><table cellspacing="0" cellpadding="0" border="0" class="layui-table" lay-skin="line"><tbody><tr data-index="0"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">1</div></td></tr><tr data-index="1"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">2</div></td></tr><tr data-index="2"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">3</div></td></tr><tr data-index="3"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">4</div></td></tr><tr data-index="4"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">5</div></td></tr><tr data-index="5"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">6</div></td></tr><tr data-index="6"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">7</div></td></tr><tr data-index="7"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">8</div></td></tr><tr data-index="8"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">9</div></td></tr><tr data-index="9"><td data-field="0"><div class="layui-table-cell laytable-cell-10-0 laytable-cell-numbers">10</div></td></tr></tbody></table></div></div></div><div class="layui-table-page"><div id="layui-table-page10"><div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage-10"><a href="javascript:;" class="layui-laypage-prev layui-disabled" data-page="0"><i class="layui-icon"></i></a><span class="layui-laypage-curr"><em class="layui-laypage-em"></em><em>1</em></span><a href="javascript:;" data-page="2">2</a><a href="javascript:;" data-page="3">3</a><span class="layui-laypage-spr">…</span><a href="javascript:;" class="layui-laypage-last" title="尾页" data-page="10">10</a><a href="javascript:;" class="layui-laypage-next" data-page="2"><i class="layui-icon"></i></a><span class="layui-laypage-skip">到第<input type="text" min="1" value="1" class="layui-input">页<button type="button" class="layui-laypage-btn">确定</button></span><span class="layui-laypage-count">共 100 条</span><span class="layui-laypage-limits"><select lay-ignore=""><option value="10" selected="">10 条/页</option><option value="20">20 条/页</option><option value="30">30 条/页</option><option value="40">40 条/页</option><option value="50">50 条/页</option><option value="60">60 条/页</option><option value="70">70 条/页</option><option value="80">80 条/页</option><option value="90">90 条/页</option></select></span></div></div></div><style>.laytable-cell-10-0{ width: 40px; }.laytable-cell-10-title{ width: 300px; }.laytable-cell-10-username{ width: 164px; }.laytable-cell-10-channel{ width: 164px; }.laytable-cell-10-crt{ width: 164px; }</style></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="layui-col-md4">
+      <div class="layui-card">
+        <div class="layui-card-header">版本信息</div>
+        <div class="layui-card-body layui-text">
+          <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col>
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>当前版本</td>
+                <td>
+                  <script type="text/html" template="">
+                    v{{ layui.admin.v }}
+                    <a href="http://fly.layui.com/docs/3/" target="_blank" style="padding-left: 15px;">更新日志</a>
+                  </script> v1.0.0-beta6 <a href="http://fly.layui.com/docs/3/" target="_blank" style="padding-left: 15px;">更新日志</a> 
+                </td>
+              </tr>
+              <tr>
+                <td>基于框架</td>
+                <td>
+                  <script type="text/html" template="">
+                    layui-v{{ layui.v }}
+                  </script> layui-v2.2.6-rc2 
+               </td>
+              </tr>
+              <tr>
+                <td>主要特色</td>
+                <td>单页面 / 响应式 / 清爽 / 极简</td>
+              </tr>
+              <tr>
+                <td>获取渠道</td>
+                <td style="padding-bottom: 0;">
+                  <div class="layui-btn-container">
+                    <a href="http://www.layui.com/admin/" target="_blank" class="layui-btn layui-btn-danger">获取授权</a>
+                    <a href="http://fly.layui.com/download/layuiAdmin/" target="_blank" class="layui-btn">立即下载</a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="layui-card">
+        <div class="layui-card-header">效果报告</div>
+        <div class="layui-card-body layadmin-takerates">
+          <div class="layui-progress" lay-showpercent="yes">
+            <h3>转化率（日同比 28% <span class="layui-edge layui-edge-top" lay-tips="增长" lay-offset="-15"></span>）</h3>
+            <div class="layui-progress-bar" lay-percent="65%" style="width: 65%;"><span class="layui-progress-text">65%</span></div>
+          </div>
+          <div class="layui-progress" lay-showpercent="yes">
+            <h3>签到率（日同比 11% <span class="layui-edge layui-edge-bottom" lay-tips="下降" lay-offset="-15"></span>）</h3>
+            <div class="layui-progress-bar" lay-percent="32%" style="width: 32%;"><span class="layui-progress-text">32%</span></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="layui-card">
+        <div class="layui-card-header">实时监控</div>
+        <div class="layui-card-body layadmin-takerates">
+          <div class="layui-progress" lay-showpercent="yes">
+            <h3>CPU使用率</h3>
+            <div class="layui-progress-bar" lay-percent="58%" style="width: 58%;"><span class="layui-progress-text">58%</span></div>
+          </div>
+          <div class="layui-progress" lay-showpercent="yes">
+            <h3>内存占用率</h3>
+            <div class="layui-progress-bar layui-bg-red" lay-percent="90%" style="width: 90%;"><span class="layui-progress-text">90%</span></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="layui-card">
+        <div class="layui-card-header">产品动态</div>
+        <div class="layui-card-body">
+          <div class="layui-carousel layadmin-carousel layadmin-news" data-autoplay="true" data-anim="fade" lay-filter="news" lay-anim="fade" lay-indicator="inside" lay-arrow="none" style="width: 100%; height: 280px;">
+            <div carousel-item="">
+              <div class=""><a href="http://fly.layui.com/docs/2/" target="_blank" class="layui-bg-red">layuiAdmin 快速上手文档</a></div>
+              <div class=""><a href="javascript:;" onclick="layer.msg('等待添加')" target="_blank" class="layui-bg-green">layuiAdmin 集成心得分享</a></div> 
+              <div class="layui-this"><a href="javascript:;" onclick="layer.msg('等待添加')" target="_blank" class="layui-bg-blue">首款 layui 官方后台模板系统正式发布</a></div>
+            </div>
+          <div class="layui-carousel-ind"><ul><li class=""></li><li class=""></li><li class="layui-this"></li></ul></div><button class="layui-icon layui-carousel-arrow" lay-type="sub"></button><button class="layui-icon layui-carousel-arrow" lay-type="add"></button></div>
+        </div>
+      </div>
+
+      <div class="layui-card">
+        <div class="layui-card-header">
+          作者心语
+          <i class="layui-icon layui-icon-tips" lay-tips="要支持的噢" lay-offset="5"></i>
+        </div>
+        <div class="layui-card-body layui-text layadmin-text">
+          <p>一直以来，layui 秉承无偿开源的初心，虔诚致力于服务各层次前后端 Web 开发者，在商业横飞的当今时代，这一信念从未动摇。即便身单力薄，仍然重拾决心，埋头造轮，以尽可能地填补产品本身的缺口。</p>
+          <p>在过去的一段的时间，我一直在寻求持久之道，已维持你眼前所见的一切。而 layuiAdmin 是我们尝试解决的手段之一。我相信真正有爱于 layui 生态的你，定然不会错过这一拥抱吧。</p>
+          <p>子曰：君子不用防，小人防不住。请务必通过官网正规渠道，获得 <a href="http://www.layui.com/admin/" target="_blank">layuiAdmin</a>！</p>
+          <p>—— 贤心（<a href="http://www.layui.com/" target="_blank">layui.com</a>）</p>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div><script>
+//加载 controller 目录下的对应模块
+/*
+
+  小贴士：
+    这里 console 模块对应 的 console.js 并不会重复加载，
+    然而该页面的视图则是重新插入到容器，那如何保证能重新来控制视图？有两种方式：
+      1): 借助 layui.factory 方法获取 console 模块的工厂（回调函数）给 layui.use
+      2): 直接在 layui.use 方法的回调中书写业务代码，即:
+          layui.use('console', function(){ 
+            //同 console.js 中的 layui.define 回调中的代码 
+          });
+          
+  这里我们采用的是方式1。其它很多视图中采用的其实都是方式2，因为更简单些，也减少了一个请求数。
+  
+*/
+layui.use('console', layui.factory('console'));
+</script></div>
+  </div>
+  
+  <!-- 辅助元素，一般用于移动设备下遮罩 -->
+  <div class="layadmin-body-shade" layadmin-event="shade"></div>
+  
+</div></div>
+  <script src="../script/layui/layui.js"></script>
+  <script>
+  layui.config({
+    base: './dist/' //指定 layuiAdmin 项目路径
+    ,version: '1.0.0-beta6-2'
+  }).use('index');
+  </script>
+<div class="layui-layer-move"></div></body>
+</html>
+

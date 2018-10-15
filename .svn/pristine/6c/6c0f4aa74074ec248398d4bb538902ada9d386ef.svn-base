@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sys.dao.RoleMapper">
+
+	<!-- 数据库字段 -->
+	<sql id="Base_Column_List" >
+	  ROLE_ID,MENU_ROLE_ID,USER_ROLE_ID,ROLE_NAME,ORDER_FLAG,REMARK,ENABLED_FLAG,CREATE_BY,CREATE_DATE,UPDATE_BY,UPDATE_DATE
+  	</sql>
+  	
+  	<!-- 映射 -->
+  	<resultMap type="com.sys.entity.RoleBean" id="Base_Column_Mapper">
+		<id property="roleId" column="ROLE_ID"/>
+		<result property="roleName" column="ROLE_NAME"/>
+		<result property="orderFlag" column="ORDER_FLAG"/>
+		<result property="remark" column="REMARK"/>
+		<result property="enabledFlag" column="ENABLED_FLAG"/>
+		<result property="createBy" column="CREATE_BY"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateBy" column="UPDATE_BY"/>
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="createByName" column="createByName"/>
+		<result property="createDateStr" column="createDateStr"/>
+		<result property="updateByName" column="updateByName"/>
+		<result property="updateDateStr" column="updateDateStr" />
+		<result property="enabledFlagStr" column="enabledFlagStr" />
+	</resultMap>
+  	
+	<!-- 分页 -->
+	<select id="findRoleByPage" resultType="java.util.List" parameterType="java.util.Map" resultMap="Base_Column_Mapper">
+		select <include refid="Base_Column_List" />,(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.CREATE_BY) createByName,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.UPDATE_BY) updateByName,DATE_FORMAT(t.CREATE_DATE,'%Y-%m-%d %H:%i') createDateStr,
+		(SELECT A.DIC_NAME FROM sys_dictionary A WHERE A.DIC_CODE=t.ENABLED_FLAG AND A.TYPE_CODE='ENABLED_FLAG') enabledFlagStr,DATE_FORMAT(t.UPDATE_DATE,'%Y-%m-%d %H:%i') updateDateStr
+		from sys_role t where 1=1 and t.ENABLED_FLAG='1' 
+		<if test="param0 !=null and param0 !='' ">
+    		and t.ROLE_NAME LIKE CONCAT('%','${param0}','%')
+    	</if>
+    	<if test="pageNow != null and pageSize != null">
+		  limit #{pageNow},#{pageSize}
+		</if>
+	</select>
+	
+	
+    <!-- 总数量 -->
+    <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    	SELECT count(1) cnt FROM sys_role t WHERE 1=1 and t.ENABLED_FLAG='1' 
+    	<if test="param0 !=null and param0 !='' ">
+    		and t.ROLE_NAME LIKE CONCAT('%','${param0}','%')
+    	</if>
+    </select>
+    
+    <!-- 根据ID查询 -->
+    <select id="findById" resultType="com.sys.entity.RoleBean" parameterType="java.lang.String" resultMap="Base_Column_Mapper">
+		select t.ROLE_ID as roleId,t.ROLE_NAME as roleName,t.ORDER_FLAG as orderFlag,
+		t.REMARK as remark,t.ENABLED_FLAG as enabledFlag,t.CREATE_BY as createBy,
+    	t.CREATE_DATE as createDate,t.UPDATE_BY as updateBy,
+    	t.UPDATE_DATE as updateDate from sys_role t
+    	where 1=1 and t.ENABLED_FLAG='1' and t.ROLE_ID = #{roleId}
+	</select>
+	
+	<!-- 集合查询 -->
+    <select id="findByList" resultType="List" parameterType="java.lang.String" resultMap="Base_Column_Mapper">
+		select <include refid="Base_Column_List" /> from sys_role t where 1=1 and t.ENABLED_FLAG='1'
+	</select>
+	
+	<!-- 判断是否重复插入中间表 -->
+   <select id="findUserRoleCount" resultType="int" parameterType="com.sys.entity.UserRoleBean">
+   		select count(1) from sys_user_role where USER_ID = #{userId} and ROLE_ID=#{roleId} and ENABLED_FLAG='1'
+   </select>
+   
+   <!-- 插入中间表 -->
+	<insert id="addUserRole" parameterType="com.sys.entity.UserRoleBean">
+	  	INSERT INTO sys_user_role(USER_ROLE_ID,USER_ID,ROLE_ID,ORDER_FLAG,REMARK,ENABLED_FLAG,UPDATE_BY,UPDATE_DATE,CREATE_By,CREATE_DATE) 
+	  	VALUES(#{userRoleId,jdbcType=VARCHAR},#{userId},#{roleId},#{orderFlag},#{remark},#{enabledFlag},#{updateBy},#{updateDate},#{createBy},#{createDate})
+	</insert>
+	
+	<!-- 删除中间表 -->
+	<delete id="deleteUserRole" parameterType="com.sys.entity.UserRoleBean">
+	  	delete from sys_user_role where ROLE_ID=#{roleId}
+	</delete>
+	
+	
+	<!-- 新增 -->
+    <insert id="addRole" parameterType="com.sys.entity.RoleBean">
+    	INSERT INTO sys_role(ROLE_ID,ROLE_NAME,ORDER_FLAG,REMARK,ENABLED_FLAG,UPDATE_BY,UPDATE_DATE,CREATE_By,CREATE_DATE) 
+    	VALUES(#{roleId,jdbcType=VARCHAR},#{roleName},#{orderFlag},#{remark},#{enabledFlag},#{updateBy},#{updateDate},#{createBy},#{createDate})
+    </insert>
+    
+	<!-- 修改 -->
+    <update id="updateRole" parameterType="com.sys.entity.RoleBean">
+    	UPDATE sys_role SET ROLE_NAME=#{roleName},ORDER_FLAG=#{orderFlag},REMARK=#{remark},ENABLED_FLAG=#{enabledFlag},UPDATE_BY=#{updateBy},UPDATE_DATE=#{updateDate} WHERE ROLE_ID=#{roleId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 逻辑删除 -->
+    <update id="removeRole" parameterType="java.lang.String">
+    	UPDATE sys_role SET ENABLED_FLAG='0' WHERE ROLE_ID=#{roleId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 物理删除 -->
+    <delete id="deleteRole" parameterType="java.lang.String">
+    	delete from sys_user_role WHERE ROLE_ID=#{roleId}
+    	delete from sys_role WHERE ROLE_ID=#{roleId}
+    </delete>
+    
+    <!-- 删除菜单角色中间表 -->
+    <delete id="deleteRoleIdMenuId" parameterType="java.util.Map">
+    	delete from sys_role_menu WHERE ROLE_ID = #{roleId} and MENU_ID = #{menuId}
+    </delete>
+    
+</mapper>

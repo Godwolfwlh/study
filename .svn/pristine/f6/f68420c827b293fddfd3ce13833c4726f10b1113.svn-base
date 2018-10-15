@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="renderer" content="webkit"><meta http-equiv="X-UA-Compatible" content="IE=9,IE=10" />
+<meta http-equiv="Expires" content="0"><meta http-equiv="Cache-Control" content="no-cache"><meta http-equiv="Cache-Control" content="no-store">
+<title>菜单分类信息</title>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/layui.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/modules/layer/default/layer.css"></link>
+<!-- <link rel="stylesheet" type="text/css" href="../script/layui/css/global.css" />
+<link rel="stylesheet" type="text/css" href="../script/layui/css/admin.css" /> -->
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/metro/easyui.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/icon.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/color.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/table.css">
+<link rel="stylesheet" type="text/css" href="../style/common.css"></link>
+<script type="text/javascript" src="../script/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../script/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../script/layui/layui.js"></script>
+<script type="text/javascript" src="../script/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="../script/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="./js/menuType.js"></script>
+</head>
+<body>
+	<div class="layui-card">
+		<div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">验证手机</label>
+            <div class="layui-input-inline">
+              <input type="tel" name="phone" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">验证邮箱</label>
+            <div class="layui-input-inline">
+              <input type="text" name="email" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">验证邮箱</label>
+            <div class="layui-input-inline">
+              <input type="text" name="email" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item">
+		  <div class="layui-inline">
+		    <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="menuType.tab('add','')"><i class="layui-icon">&#xe654;</i>新增</button>
+		    <!-- <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe642;</i>修改</button>
+		    <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe640;</i>删除</button> -->
+		    <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe7a0;</i>导出</button>
+		    <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#x1002;</i>刷新</button>
+		  </div>
+		</div>	
+		<!-- 表格 -->
+		<div class="layui-form">
+			<table class="layui-table" id="dg"></table>
+		</div>
+	</div>
+	
+	
+	<!-- edit -->
+	<div class="layui-form" id="menuTypeform" style="display: none">
+		<input type="hidden" id="typeId" />
+		<div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">分类名称</label>
+            <div class="layui-input-inline">
+              <input type="text" name="typeName" id="typeName" class="layui-input">
+            </div>
+          </div>
+         </div>
+         <div class="layui-form-item"> 
+	          <div class="layui-inline">
+	            <label class="layui-form-label">排序标识</label>
+	            <div class="layui-input-inline">
+	              <input type="text" id="orderFlag" class="layui-input">
+	            </div>
+	          </div>
+          </div>
+        <div class="layui-form-item">
+		    <label class="layui-form-label">是否可用</label>
+		    <div class="layui-input-inline">
+		      <input type="text" id="enabledFlag" class="input" style="width:150px;" />
+		    </div>
+		</div>
+        <div class="layui-form-item">
+          	<div class="layui-inline">
+	            <label class="layui-form-label">备注</label>
+	            <div class="layui-input-inline">
+	              <textarea placeholder="请输入内容" class="layui-textarea" id="remark"></textarea>
+	            </div>
+          	</div>
+        </div>
+	</div>
+</body>
+</html>

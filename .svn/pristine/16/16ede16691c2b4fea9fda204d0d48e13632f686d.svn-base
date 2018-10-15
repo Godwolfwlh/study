@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd ">
+	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+       <property name ="locations">  
+           <list>  
+                 <value>classpath:dbconfig.properties </value>  
+            </list>  
+        </property>  
+    </bean>
+
+    <!-- 阿里 druid 数据库连接池 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">  
+         <!-- 数据库基本信息配置 -->
+         <property name = "url" value="${jdbc.url}" />  
+         <property name = "username" value="${jdbc.username}" />  
+         <property name = "password" value="${jdbc.password}" />  
+         <property name = "driverClassName" value="${jdbc.driverClassName}" />  
+         <property name = "filters" value="${filters}" />  
+          <!-- 最大并发连接数 -->
+         <property name = "maxActive" value="${maxActive}" />
+         <!-- 初始化连接数量 -->
+         <property name = "initialSize" value="${initialSize}" />
+         <!-- 配置获取连接等待超时的时间 -->
+         <property name = "maxWait" value = "${maxWait}" />
+         <!-- 最小空闲连接数 -->
+         <property name = "minIdle" value = "${minIdle}" />  
+         <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+         <property name = "timeBetweenEvictionRunsMillis" value ="${timeBetweenEvictionRunsMillis}" />
+         <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+         <property name = "minEvictableIdleTimeMillis" value ="${minEvictableIdleTimeMillis}" />  
+         <property name = "validationQuery" value = "${validationQuery}" />  
+         <property name = "testWhileIdle" value = "${testWhileIdle}" />  
+         <property name = "testOnBorrow" value = "${testOnBorrow}" />  
+         <property name = "testOnReturn" value = "${testOnReturn}" />  
+         <property name = "maxOpenPreparedStatements" value ="${maxOpenPreparedStatements}" />
+         <!-- 打开 removeAbandoned 功能 -->
+         <property name = "removeAbandoned" value = "${removeAbandoned}" />
+         <!-- 1800 秒，也就是 30 分钟 -->
+         <property name = "removeAbandonedTimeout" value ="${removeAbandonedTimeout}" />
+         <!-- 关闭 abanded 连接时输出错误日志 -->   
+         <property name = "logAbandoned" value = "${logAbandoned}" />
+    </bean>
+    
+    <!--3：配置SqlSessionFactory对象-->
+    <!-- 配置mybatis的sqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--注入数据库连接池-->
+        <property name="dataSource" ref="dataSource"/>
+
+        <!--配置mybatis全局配置文件：mybatis-config.xml-->
+        <property name="configLocation" value="classpath:mybatis-configs.xml"/>
+
+        <!--扫描entity包 使用别名-->
+        <!-- <property name="typeAliasesPackage" value="org.seckill.entity"/> -->
+
+        <!--扫面sql配置文件，也就是mapper需要的xml文件-->
+        <property name="mapperLocations">
+        	<list>
+                <value>classpath:com/common/mapping/*.xml</value>
+                <value>classpath*:com/*/mapping/*.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--4：配置扫面dao接口包，动态实现dao接口并注入到spring容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--注入sqlSession的过程-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+
+        <!--给出扫描dao接口包-->
+        <property name="basePackage" value="com.*.dao"/>
+    </bean>
+    
+    <!-- 注入MyBatis SqlSessionTemplate模板,相当于Hibernate中的HibernatTemplate-->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<!-- 通过构造方法注入，SqlSessionTemplate中没有sqlSessionFactory属性的set方法，所以只能通过构造方法注入 -->
+		<!-- 第一种方式,根据方法参数名注入 -->
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+		<!-- 第二种方式,根据构造方法参数索引注入
+		<constructor-arg index="0" ref="sqlSessionFactory"/>
+		 -->
+	</bean>
+	
+	<!-- 注入基本链接 -->
+	<bean id="connectionImpl" class="com.common.basedb.conn.ConnectionImpl">
+		<property name="sqlSessionTemplate" ref="sqlSessionTemplate"></property>
+	</bean>
+    
+    <!-- 配置事务管理 -->  
+    <bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">       
+         <property name="dataSource" ref="dataSource"></property>  
+    </bean>
+    <!-- 事务相关控制配置：例如配置事务的传播机制 -->
+	<tx:advice id="iccardTxAdvice" transaction-manager="transactionManager">
+	    <tx:attributes>
+	      <tx:method name="delete*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" no-rollback-for="java.lang.RuntimeException"/>
+	      <tx:method name="remove*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" no-rollback-for="java.lang.RuntimeException"/>
+	      <tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.RuntimeException" />
+	      <tx:method name="add*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.RuntimeException" />
+	      <tx:method name="create*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.RuntimeException" />
+	      <tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" />
+	      
+	      <tx:method name="find*" propagation="SUPPORTS" />
+	      <tx:method name="get*" propagation="SUPPORTS" />
+	      <tx:method name="select*" propagation="SUPPORTS" />
+	      <tx:method name="query*" propagation="SUPPORTS" />
+	    </tx:attributes>
+	</tx:advice>
+	
+	<!-- 把事务控制在service层 -->
+	<aop:config>    
+	    <aop:pointcut id="iccardTerm" expression="execution(public * com.sys.service.*.*(..))" />
+	    <aop:advisor pointcut-ref="iccardTerm" advice-ref="iccardTxAdvice" />
+	</aop:config>
+</beans>

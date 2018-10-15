@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.basic.dao.CustomerDao" >
+	<!-- 实体映射 -->
+  <resultMap id="BaseResultMap" type="com.basic.entity.CustomerBean" >
+    <id column="CUST_ID" property="custId" jdbcType="VARCHAR" />
+    <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
+    <result column="CARD_NUMBER" property="cardNumber" jdbcType="VARCHAR" />
+    <result column="LINK_PHONE" property="linkPhone" jdbcType="VARCHAR" />
+    <result column="GENDER" property="gender" jdbcType="VARCHAR" />
+    <result column="BIRTH_DATE" property="birthDate" jdbcType="VARCHAR" />
+    <result column="AGE" property="age" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="LEAG_SCORE" property="leagScore" jdbcType="INTEGER" />
+    <result column="IS_LEAGUER" property="isLeaguer" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="orderFlagName" property="orderFlagName" />
+    <result column="ORDER_FLAG" property="orderFlag" jdbcType="INTEGER" />
+    <result column="ENABLED_FLAG" property="enabledFlag" jdbcType="INTEGER" />
+    <result column="CUST_STATE" property="custState" jdbcType="VARCHAR" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+    <result property="createDateStr" column="createDateStr" />
+	<result property="updateDateStr" column="updateDateStr" />
+	<result property="createByName" column="createByName" />
+	<result property="updateByName" column="updateByName" />
+  </resultMap>
+  
+  <!-- sql字段 -->
+  <sql id="Base_Column_List" >
+    CUST_ID, CUST_NAME, CARD_NUMBER, LINK_PHONE, GENDER, BIRTH_DATE, AGE, ADDRESS, LEAG_SCORE,CUST_STATE, 
+    IS_LEAGUER, REMARK, ORDER_FLAG, ENABLED_FLAG, CREATE_BY, CREATE_DATE, UPDATE_BY,UPDATE_DATE
+  </sql>
+  
+  <!-- 根据ID查询 -->
+  <select id="findCustById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List" /> from hotel_customer where CUST_ID = #{custId,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据ID删除 -->
+  <delete id="deleteCustById" parameterType="java.lang.String" >
+    delete from hotel_customer where CUST_ID = #{custId,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 逻辑删除删除 -->
+  <delete id="removeCustById" parameterType="java.lang.String" >
+    delete from hotel_customer where CUST_ID = #{custId,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 新增 -->
+  <insert id="insertCust" parameterType="com.basic.entity.CustomerBean" >
+    insert into hotel_customer (CUST_ID, CUST_NAME, CARD_NUMBER,LINK_PHONE, GENDER, BIRTH_DATE,AGE, ADDRESS, 
+    	LEAG_SCORE,IS_LEAGUER, REMARK, ORDER_FLAG,ENABLED_FLAG, CREATE_BY, CREATE_DATE,UPDATE_BY, UPDATE_DATE,CUST_STATE)
+    values (#{custId,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR}, #{cardNumber,jdbcType=VARCHAR}, 
+      #{linkPhone,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE}, 
+      #{age,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{leagScore,jdbcType=INTEGER}, 
+      #{isLeaguer,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{orderFlag,jdbcType=INTEGER}, 
+      #{enabledFlag,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},#{custState,jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- 动态插入 -->
+  <insert id="insertCustSelective" parameterType="com.basic.entity.CustomerBean" >
+    insert into hotel_customer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="custId != null" >
+        CUST_ID,
+      </if>
+      <if test="custName != null" >
+        CUST_NAME,
+      </if>
+      <if test="cardNumber != null" >
+        CARD_NUMBER,
+      </if>
+      <if test="linkPhone != null" >
+        LINK_PHONE,
+      </if>
+      <if test="gender != null" >
+        GENDER,
+      </if>
+      <if test="birthDate != null" >
+        BIRTH_DATE,
+      </if>
+      <if test="age != null" >
+        AGE,
+      </if>
+      <if test="address != null" >
+        ADDRESS,
+      </if>
+      <if test="leagScore != null" >
+        LEAG_SCORE,
+      </if>
+      <if test="isLeaguer != null" >
+        IS_LEAGUER,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="orderFlag != null" >
+        ORDER_FLAG,
+      </if>
+      <if test="enabledFlag != null" >
+        ENABLED_FLAG,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY,
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE,
+      </if>
+      <if test="custState != null" >
+        CUST_STATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="custId != null" >
+        #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="custName != null" >
+        #{custName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNumber != null" >
+        #{cardNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="linkPhone != null" >
+        #{linkPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="birthDate != null" >
+        #{birthDate,jdbcType=DATE},
+      </if>
+      <if test="age != null" >
+        #{age,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="leagScore != null" >
+        #{leagScore,jdbcType=INTEGER},
+      </if>
+      <if test="isLeaguer != null" >
+        #{isLeaguer,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderFlag != null" >
+        #{orderFlag,jdbcType=INTEGER},
+      </if>
+      <if test="enabledFlag != null" >
+        #{enabledFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="custState != null" >
+        #{custState,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 修改 -->
+  <update id="updateCustSelective" parameterType="com.basic.entity.CustomerBean" >
+    update hotel_customer
+    <set >
+      <if test="custName != null" >
+        CUST_NAME = #{custName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNumber != null" >
+        CARD_NUMBER = #{cardNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="linkPhone != null" >
+        LINK_PHONE = #{linkPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        GENDER = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="birthDate != null" >
+        BIRTH_DATE = #{birthDate,jdbcType=DATE},
+      </if>
+      <if test="age != null" >
+        AGE = #{age,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="leagScore != null" >
+        LEAG_SCORE = #{leagScore,jdbcType=INTEGER},
+      </if>
+      <if test="isLeaguer != null" >
+        IS_LEAGUER = #{isLeaguer,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderFlag != null" >
+        ORDER_FLAG = #{orderFlag,jdbcType=INTEGER},
+      </if>
+      <if test="enabledFlag != null" >
+        ENABLED_FLAG = #{enabledFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="custState != null" >
+        CUST_STATE = #{custState,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CUST_ID = #{custId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据ID修改 -->
+  <update id="updateCustById" parameterType="com.basic.entity.CustomerBean" >
+    update hotel_customer
+    set CUST_NAME = #{custName,jdbcType=VARCHAR},
+      CARD_NUMBER = #{cardNumber,jdbcType=VARCHAR},
+      LINK_PHONE = #{linkPhone,jdbcType=VARCHAR},
+      GENDER = #{gender,jdbcType=VARCHAR},
+      BIRTH_DATE = #{birthDate,jdbcType=DATE},
+      AGE = #{age,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      LEAG_SCORE = #{leagScore,jdbcType=INTEGER},
+      IS_LEAGUER = #{isLeaguer,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      ORDER_FLAG = #{orderFlag,jdbcType=INTEGER},
+      ENABLED_FLAG = #{enabledFlag,jdbcType=INTEGER},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      CUST_STATE = #{custState,jdbcType=VARCHAR},
+    where CUST_ID = #{custId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 分页查询 -->
+	<select id="findCustByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT CUST_ID, CUST_NAME, CARD_NUMBER, LINK_PHONE, BIRTH_DATE, AGE, ADDRESS, LEAG_SCORE,t.GENDER, t.CUST_STATE,
+		(SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='IS_LEAGUER' and a.DIC_CODE=t.IS_LEAGUER) IS_LEAGUER, 
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.CREATE_BY) createByName,t.CREATE_BY,t.CREATE_DATE,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.UPDATE_BY) updateByName,t.UPDATE_BY,t.UPDATE_DATE,
+		DATE_FORMAT(t.CREATE_DATE,'%Y-%m-%d %H:%i') createDateStr,DATE_FORMAT(t.UPDATE_DATE,'%Y-%m-%d %H:%i') updateDateStr,
+	    t.REMARK, t.ORDER_FLAG, t.ENABLED_FLAG from hotel_customer t where 1=1 and t.ENABLED_FLAG='1'
+	    <if test="param0 != null and param0 != '' ">
+	    	AND t.CUST_NAME LIKE CONCAT('%','${param0}','%' )
+	    </if>
+	    <if test="param1 != null and param1 != '' ">
+	    	AND t.CARD_NUMBER LIKE #{param1}
+	    </if>
+	    <if test="param2 != null and param2 != '' ">
+	    	AND t.GENDER= #{param2}
+	    </if>
+	    <if test="param3 != null and param3 != '' ">
+	    	AND t.LINK_PHONE= #{param3}
+	    </if>
+	    <if test="param4 != null and param4 != '' ">
+	    	AND t.IS_LEAGUER = #{param4}
+	    </if>
+	    <!-- 客户状态 -->
+	    <if test="param5 != null and param5 != '' ">
+	    	AND t.CUST_STATE = #{param5}
+	    </if>
+    	<if test="pageNow != null and pageSize != null">
+		  limit #{pageNow},#{pageSize}
+		</if>
+	</select>  
+	
+	<!-- 获得数量 -->
+	<select id="getCustCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) cnt from hotel_customer t where 1=1 and t.ENABLED_FLAG='1'
+		 <if test="param0 != null and param0 != '' ">
+	    	AND t.CUST_NAME LIKE CONCAT('%','${param0}','%' )
+	    </if>
+	    <if test="param1 != null and param1 != '' ">
+	    	AND t.CARD_NUMBER LIKE #{param1}
+	    </if>
+	    <if test="param2 != null and param2 != '' ">
+	    	AND t.GENDER= #{param2}
+	    </if>
+	    <if test="param3 != null and param3 != '' ">
+	    	AND t.LINK_PHONE= #{param3}
+	    </if>
+	    <if test="param4 != null and param4 != '' ">
+	    	AND t.IS_LEAGUER = #{param4}
+	    </if>
+	</select>  
+	
+	<!-- 获得最大序列号 -->
+	<select id="getCustMaxOrderFlag" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT IFNULL((MAX(t.ORDER_FLAG)+1),1) flag FROM hotel_customer t WHERE t.ENABLED_FLAG='1'
+	</select>
+</mapper>

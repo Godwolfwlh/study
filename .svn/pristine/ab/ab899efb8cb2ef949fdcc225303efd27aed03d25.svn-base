@@ -1,0 +1,15 @@
+
+.tableone{
+    margin: 0 10px 0 10px;
+    border-left: none;
+    border-right: none;
+    border: #e5eecc;
+    margin: 0 10px 0 10px;
+    border-left: none;
+    border-right: none;
+    border: #e5eecc;
+}
+
+.tdone{
+    background-color: rgba(200, 226, 232, 0.28);
+}

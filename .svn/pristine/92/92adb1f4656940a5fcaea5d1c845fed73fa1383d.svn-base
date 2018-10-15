@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sys.dao.MenuMapper">
+	
+	<!-- 数据库字段 -->
+	<sql id="Base_Column_List" >
+	   MENU_ID,MENU_NAME,PARENT_ID,MENU_TYPE_ID,URL_PARAMS,URL,CSS,IS_SYSMENU,IS_OPEN,ORDER_FLAG
+	   CREATE_DATE,BIRTH_DATE,CREATE_BY,UPDATE_BY,REMARK,UPDATE_DATE,ENABLED_FLAG
+  	</sql>
+  	
+  	<!-- 实体映射 -->
+	<resultMap type="com.sys.entity.MenuBean" id="menuMapResult">
+		<id property="menuId" column="MENU_ID"/>
+		<result property="menuName" column="MENU_NAME"/>
+		<result property="parentId" column="PARENT_ID"/>
+		<result property="menuTypeId" column="MENU_TYPE_ID"/>
+		<result property="urlParams" column="URL_PARAMS"/>
+		<result property="url" column="URL"/>
+		<result property="css" column="CSS"/>
+		<result property="isSysMenu" column="IS_SYSMENU"/>
+		<result property="isOpen" column="IS_OPEN"/>
+		<result property="parentName" column="parentName"/>
+		<result property="orderFlag" column="ORDER_FLAG"/>
+		<result property="remark" column="REMARK"/>
+		<result property="enabledFlagStr" column="ENABLED_FLAG"/>
+		<result property="createByName" column="CREATE_BY"/>
+		<result property="createDateStr" column="CREATE_DATE"/>
+		<result property="updateByName" column="UPDATE_BY"/>
+		<result property="updateDateStr" column="UPDATE_DATE" />
+	</resultMap>
+	
+    <!-- 总数量 -->
+    <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    	SELECT count(1) cnt FROM sys_menu t WHERE 1=1 and t.ENABLED_FLAG='1' 
+    	<if test="param0 !=null and param0 !='' ">
+    		and t.MENU_NAME LIKE CONCAT('%','${param0}','%' )
+    	</if>
+    	<if test="param1 !=null and param1 !='' ">
+    		and t.PARENT_ID=#{param1}
+    	</if>
+    </select>
+    
+    <!-- 根据ID查询 -->
+    <select id="findByMenuId" resultType="com.sys.entity.MenuBean" parameterType="java.lang.String" resultMap="menuMapResult">
+		select t.MENU_ID as menuId,t.MENU_NAME,PARENT_ID,MENU_TYPE_ID,URL,URL_PARAMS,CSS,IS_SYSMENU,t.ORDER_FLAG,t.REMARK,t.UPDATE_DATE,t.CREATE_BY,t.UPDATE_BY,
+		t.ENABLED_FLAG,t.IS_OPEN,t.CREATE_DATE,(select a.MENU_NAME from sys_menu a where a.MENU_ID=t.PARENT_ID and a.ENABLED_FLAG='1') parentName 
+		from sys_menu t where 1=1 and t.ENABLED_FLAG='1' and t.MENU_ID = #{menuId}
+	</select>
+	
+	<!-- 查询所有菜单 -->
+	<select id="findMenuList" resultType="java.util.List" parameterType="java.util.Map" resultMap="menuMapResult">
+		select t.MENU_ID,t.MENU_NAME,PARENT_ID,MENU_TYPE_ID,URL,URL_PARAMS,CSS,IS_SYSMENU,t.ORDER_FLAG,t.REMARK,
+		DATE_FORMAT(t.CREATE_DATE,'%Y-%m-%d %H:%i') CREATE_DATE,DATE_FORMAT(t.UPDATE_DATE,'%Y-%m-%d %H:%i') UPDATE_DATE,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.CREATE_BY) CREATE_BY,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.UPDATE_BY) UPDATE_BY,
+		(select a.MENU_NAME from sys_menu a where a.MENU_ID=t.PARENT_ID and a.ENABLED_FLAG='1') parentName,
+		t.ENABLED_FLAG from sys_menu t where 1=1 and t.ENABLED_FLAG='1'
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="findMenuByPage" parameterType="java.util.Map" resultMap="menuMapResult">
+		select t.MENU_ID,t.MENU_NAME,PARENT_ID,URL,URL_PARAMS,CSS,IS_SYSMENU,t.ORDER_FLAG,t.REMARk,
+		(SELECT A.DIC_NAME FROM sys_dictionary A WHERE A.DIC_CODE=t.ENABLED_FLAG AND A.TYPE_CODE='ENABLED_FLAG') ENABLED_FLAG,
+		(SELECT b.DIC_NAME FROM sys_dictionary b WHERE b.DIC_CODE=t.IS_OPEN AND b.TYPE_CODE='IS_LEAGUER') IS_OPEN,
+		DATE_FORMAT(t.CREATE_DATE,'%Y-%m-%d %H:%i') CREATE_DATE,DATE_FORMAT(t.UPDATE_DATE,'%Y-%m-%d %H:%i') UPDATE_DATE,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.CREATE_BY) CREATE_BY,(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.UPDATE_BY) UPDATE_BY,
+    	(select a.MENU_NAME from sys_menu a where a.MENU_ID=t.PARENT_ID and a.ENABLED_FLAG='1') parentName
+    	from sys_menu t where 1=1 and t.ENABLED_FLAG='1' 
+    	<if test="param0 !=null and param0 !='' ">
+    		and t.MENU_NAME LIKE CONCAT('%','${param0}','%' )
+    	</if>
+    	<if test="param1 !=null and param1 !='' ">
+    		and t.PARENT_ID=#{param1}
+    	</if>
+    	<if test="pageNow != null and pageSize != null">
+		  limit #{pageNow},#{pageSize}
+		</if>
+	</select>
+	
+	<!-- 根据parentId查询下级 -->
+	<select id="findByParentId" resultType="List" parameterType="java.util.Map" resultMap="menuMapResult">
+		select t.MENU_ID,t.MENU_NAME,PARENT_ID,MENU_TYPE_ID,URL,URL_PARAMS,CSS,IS_SYSMENU,t.ORDER_FLAG,t.REMARK,t.ENABLED_FLAG,
+		t.CREATE_BY,t.CREATE_DATE,t.UPDATE_BY,t.UPDATE_DATE from sys_menu t where 1=1 and t.ENABLED_FLAG='1'
+    	<choose>
+	       <when test="parentId != null and parentId != '' ">
+	              AND t.PARENT_ID=#{parentId}
+	       </when>
+	       <otherwise>
+	             AND  (t.PARENT_ID IS NULL OR t.PARENT_ID='') 
+	        </otherwise>
+         </choose>
+    	 <!-- <if test="parentId !=null ">  
+	        t.PARENT_ID=#{parentId}
+	    </if>   -->
+	</select>
+	
+	<!-- 权限查询菜单 -->
+	<select id="findPermissionMenu" resultType="List" parameterType="java.util.Map" resultMap="menuMapResult">
+		select t.MENU_ID,t.MENU_NAME,PARENT_ID,URL,URL_PARAMS,CSS,IS_SYSMENU,t.ORDER_FLAG,t.REMARk,t.IS_OPEN,
+		(SELECT A.DIC_NAME FROM sys_dictionary A WHERE A.DIC_CODE=t.ENABLED_FLAG AND A.TYPE_CODE='ENABLED_FLAG') ENABLED_FLAG,
+		DATE_FORMAT(t.CREATE_DATE,'%Y-%m-%d %H:%i') CREATE_DATE,DATE_FORMAT(t.UPDATE_DATE,'%Y-%m-%d %H:%i') UPDATE_DATE,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.CREATE_BY) CREATE_BY,(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.UPDATE_BY) UPDATE_BY,
+    	(select a.MENU_NAME from sys_menu a where a.MENU_ID=t.PARENT_ID and a.ENABLED_FLAG='1') parentName
+    	from sys_menu t,sys_role_menu B,sys_user_role C WHERE t.MENU_ID=B.MENU_ID
+		AND C.ROLE_ID=B.ROLE_ID and t.ENABLED_FLAG='1' AND C.USER_ID=#{userId}
+	</select>
+	
+	<!-- 获得最大序列号 -->
+	<select id="getMaxOrderFlag" resultType="int">
+		SELECT IFNULL((MAX(t.ORDER_FLAG)+1),1) flag FROM sys_menu t WHERE t.ENABLED_FLAG='1';
+	</select>
+	
+	<!-- 判断是否重复插入中间表 -->
+   <select id="findMenuRoleCount" resultType="int" parameterType="java.lang.String">
+   		select count(1) from sys_role_menu where MENU_ID = #{0} and ROLE_ID=#{1} and ENABLED_FLAG='1'
+   </select>
+   
+   <!-- 插入中间表 -->
+	<insert id="addMenuRole" parameterType="com.sys.entity.MenuRoleBean">
+	  	INSERT INTO sys_role_menu(MENU_ROLE_ID,MENU_ID,ROLE_ID,ORDER_FLAG,REMARK,ENABLED_FLAG,UPDATE_BY,UPDATE_DATE,CREATE_By,CREATE_DATE) 
+	  	VALUES(#{menuRoleId,jdbcType=VARCHAR},#{menuId},#{roleId},#{orderFlag},#{remark},#{enabledFlag},#{updateBy},#{updateDate},#{createBy},#{createDate})
+	</insert>
+	
+	<!-- 新增 -->
+    <insert id="addMenu" parameterType="com.sys.entity.MenuBean">
+    	INSERT INTO sys_menu(MENU_ID,MENU_NAME,PARENT_ID,MENU_TYPE_ID,URL,URL_PARAMS,CSS,IS_SYSMENU,ORDER_FLAG,REMARK,ENABLED_FLAG,UPDATE_BY,UPDATE_DATE,CREATE_By,CREATE_DATE,IS_OPEN) 
+    	VALUES(#{menuId,jdbcType=VARCHAR},#{menuName},#{parentId},#{menuTypeId},#{url},#{urlParams},#{css},#{isSysMenu},#{orderFlag},#{remark},#{enabledFlag},#{updateBy},#{updateDate},#{createBy},#{createDate},#{isOpen})
+    </insert>
+    
+	<!-- 修改 -->
+    <update id="updateMenu" parameterType="com.sys.entity.MenuBean">
+    	UPDATE sys_menu SET MENU_NAME=#{menuName},PARENT_ID=#{parentId},URL=#{url},MENU_TYPE_ID=#{menuTypeId},
+    	URL_PARAMS=#{urlParams},CSS=#{css},IS_SYSMENU=#{isSysMenu},ORDER_FLAG=#{orderFlag},IS_OPEN=#{isOpen},
+   		REMARK=#{remark},UPDATE_BY=#{updateBy},UPDATE_DATE=#{updateDate}
+    	WHERE MENU_ID=#{menuId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 删除 -->
+    <update id="removeMenu" parameterType="java.lang.String">
+    	UPDATE sys_menu SET ENABLED_FLAG='0' WHERE MENU_ID=#{menuId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 物理删除 -->
+    <delete id="deleteMenu" parameterType="com.sys.entity.MenuBean">
+    	DELETE from  sys_menu WHERE MENU_ID=#{menuId,jdbcType=VARCHAR}
+    	DELETE from  sys_role_menu WHERE MENU_ID=#{menuId,jdbcType=VARCHAR}
+    </delete>
+    
+    <!-- 角色菜单信息 -->
+	<select id="findMenuByRoleId" parameterType="java.util.Map" resultMap="menuMapResult">
+		select t.MENU_ID,t.MENU_NAME,PARENT_ID,URL,URL_PARAMS,CSS,IS_SYSMENU,t.ORDER_FLAG,t.REMARk,
+		(SELECT A.DIC_NAME FROM sys_dictionary A WHERE A.DIC_CODE=t.ENABLED_FLAG AND A.TYPE_CODE='ENABLED_FLAG') ENABLED_FLAG,
+		(SELECT b.DIC_NAME FROM sys_dictionary b WHERE b.DIC_CODE=t.IS_OPEN AND b.TYPE_CODE='IS_LEAGUER') IS_OPEN,
+		DATE_FORMAT(t.CREATE_DATE,'%Y-%m-%d %H:%i') CREATE_DATE,DATE_FORMAT(t.UPDATE_DATE,'%Y-%m-%d %H:%i') UPDATE_DATE,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.CREATE_BY) CREATE_BY,(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.UPDATE_BY) UPDATE_BY,
+    	(select a.MENU_NAME from sys_menu a where a.MENU_ID=t.PARENT_ID and a.ENABLED_FLAG='1') parentName
+    	from sys_menu t,sys_role_menu b where 1=1 and t.ENABLED_FLAG='1' and t.MENU_ID=b.MENU_ID
+    	<if test="roleId !=null and roleId !='' ">
+    		AND b.ROLE_ID = #{roleId}
+    	</if>
+    	<if test="pageNow != null and pageSize != null">
+		  limit #{pageNow},#{pageSize}
+		</if>
+	</select>
+	
+	 <!-- 角色菜单信息 计算条数-->
+	 <select id="getMenuRoleCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+   		select count(1) from sys_menu t,sys_role_menu b where 1=1 and t.ENABLED_FLAG='1' and t.MENU_ID=b.MENU_ID AND b.ROLE_ID = #{roleId}
+   </select>
+   
+    <!-- 根据角色ID查询菜单信息 -->
+	<select id="queryMenuByRoleId" parameterType="java.util.Map" resultMap="menuMapResult">
+		select t.MENU_ID,t.MENU_NAME,PARENT_ID from sys_menu t,sys_role_menu b where 1=1 and t.ENABLED_FLAG='1' and t.MENU_ID=b.MENU_ID
+    	<if test="roleId !=null and roleId !='' ">
+    		AND b.ROLE_ID = #{roleId}
+    	</if>
+    	<!-- <if test="pageNow != null and pageSize != null">
+		  limit #{pageNow},#{pageSize}
+		</if> -->
+	</select>
+	
+	 <!-- 根据中间表菜单ID查询父级菜单 当删除父节点时，会把子节点一起删除 -->
+	<select id="findMebuByPid" parameterType="java.util.Map" resultMap="menuMapResult">
+		SELECT A.MENU_ID,A.MENU_NAME FROM sys_menu A,sys_role_menu B WHERE A.MENU_ID=B.MENU_ID 
+    	<if test="menuId !=null and menuId !='' ">
+    		AND A.PARENT_ID = #{menuId}
+    	</if>
+	</select>
+	
+</mapper>

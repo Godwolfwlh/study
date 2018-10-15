@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sys.dao.DictypeMapper">
+	
+	<!-- 数据库字段 -->
+	<sql id="Base_Column_List" >
+	  TYPE_ID,TYPE_NAME,TYPE_CODE,ORDER_FLAG,REMARK,ENABLED_FLAG,CREATE_BY,CREATE_DATE,UPDATE_BY,UPDATE_DATE
+  	</sql>
+  	
+  	<!-- 映射实体 -->
+  	<resultMap type="com.sys.entity.DictypeBean" id="Base_Column_Mapper">
+		<id property="typeId" column="TYPE_ID"/>
+		<result property="typeName" column="TYPE_NAME"/>
+		<result property="typeCode" column="TYPE_CODE"/>
+		<result property="orderFlag" column="ORDER_FLAG"/>
+		<result property="remark" column="REMARK"/>
+		<result property="enabledFlag" column="ENABLED_FLAG"/>
+		<result property="createBy" column="CREATE_BY"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateBy" column="UPDATE_BY"/>
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="createByName" column="createByName"/>
+		<result property="createDateStr" column="createDateStr"/>
+		<result property="updateByName" column="updateByName"/>
+		<result property="updateDateStr" column="updateDateStr" />
+	</resultMap>
+  	
+  	<!-- 分页查询 -->
+	<select id="findDictypeByPage" parameterType="java.util.Map" resultMap="Base_Column_Mapper">
+		select <include refid="Base_Column_List" /> , (SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.CREATE_BY) createByName,
+		 DATE_FORMAT(t.CREATE_DATE,'%Y-%m-%d %H:%i') createDateStr,DATE_FORMAT(t.UPDATE_DATE,'%Y-%m-%d %H:%i') updateDateStr,
+		 (SELECT A.DIC_NAME FROM sys_dictionary A WHERE A.DIC_CODE=t.ENABLED_FLAG AND A.TYPE_CODE='ENABLED_FLAG') ENABLED_FLAG,
+		 (SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.UPDATE_BY) updateByName from sys_dic_type t where 1=1 and t.ENABLED_FLAG='1' 
+    	<if test="param0 != null and param0 != ''">
+		  and t.TYPE_NAME LIKE CONCAT('%','${param0}','%' )
+		</if>
+    	<if test="param1 != null and param1 != ''">
+		  and t.TYPE_CODE LIKE CONCAT('%','${param1}','%' )
+		</if>
+    	<if test="pageNow != null and pageSize != null">
+		  limit #{pageNow},#{pageSize}
+		</if>
+	</select>
+    
+    <!-- 总数量 -->
+    <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    	SELECT count(1) cnt FROM sys_dic_type t WHERE 1=1 and t.ENABLED_FLAG='1'
+    	<if test="param0 != null and param0 != ''">
+		  and t.TYPE_NAME LIKE CONCAT('%','${param0}','%' )
+		</if>
+    	<if test="param1 != null and param1 != ''">
+		  and t.TYPE_CODE LIKE CONCAT('%','${param1}','%' )
+		</if>
+    </select>
+    
+    <!-- 根据ID查询 -->
+    <select id="findByDictypeId" resultType="com.sys.entity.DictypeBean" parameterType="java.lang.String" resultMap="Base_Column_Mapper">
+		select  <include refid="Base_Column_List" /> from sys_dic_type t where 1=1 and t.ENABLED_FLAG='1' and t.TYPE_ID = #{typeId}
+	</select>
+	
+	<!-- 查询list集合 -->
+	<select id="findDictypeByList" resultType="java.util.List" parameterType="java.lang.String" resultMap="Base_Column_Mapper">
+		select <include refid="Base_Column_List" /> from sys_dic_type t where 1=1 and t.ENABLED_FLAG='1'
+	</select>
+	
+	<!-- 获得最大序列号 -->
+	<select id="getMaxOrderFlag" resultType="java.lang.Integer">
+		SELECT IFNULL((MAX(t.ORDER_FLAG)+1),1) flag FROM sys_dic_type t WHERE t.ENABLED_FLAG='1'
+	</select>
+   
+	<!-- 新增 -->
+    <insert id="addDictype" parameterType="com.sys.entity.DictypeBean">
+    	INSERT INTO sys_dic_type(TYPE_ID,TYPE_NAME,ORDER_FLAG,REMARK,ENABLED_FLAG,UPDATE_BY,UPDATE_DATE,CREATE_By,CREATE_DATE,TYPE_CODE) 
+    	VALUES(
+    		#{typeId,jdbcType=VARCHAR},#{typeName},#{orderFlag},#{remark},#{enabledFlag},#{updateBy},#{updateDate},#{createBy},#{createDate},#{typeCode}
+    	)
+    </insert>
+    
+	<!-- 修改 -->
+    <update id="updateDictype" parameterType="com.sys.entity.DictypeBean">
+    	UPDATE sys_dic_type SET TYPE_NAME=#{typeName},ORDER_FLAG=#{orderFlag},TYPE_CODE=#{typeCode},
+   		REMARK=#{remark},ENABLED_FLAG=#{enabledFlag},UPDATE_BY=#{updateBy},UPDATE_DATE=#{updateDate}
+    	WHERE TYPE_ID=#{typeId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 逻辑删除 -->
+    <update id="removeDictype" parameterType="java.lang.String">
+    	UPDATE sys_dic_type SET ENABLED_FLAG='0' WHERE TYPE_ID=#{typeId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 物理删除 -->
+    <delete id="deleteDictype" parameterType="java.lang.String">
+    	DELETE from sys_dic_type WHERE TYPE_ID=#{typeId}
+    </delete>
+    
+</mapper>

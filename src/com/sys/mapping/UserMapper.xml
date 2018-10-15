@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sys.dao.UserMapper">
+
+	<!-- 数据库字段 -->
+	<sql id="Base_Column_List">
+		STAFF_ID,STAFF_NO,STAFF_NAME,GENDER,POST,LINK_PHONE,EMAIL_ADDR,STAFF_STATE,PHOTO_PATH,ORDER_FLAG,EDUCATION
+		CREATE_DATE,BIRTH_DATE,QQ,WX_CODE,CREATE_BY,UPDATE_BY,PWD,SYS_FLAG,REMARK,UPDATE_DATE,ENABLED_FLAG
+	</sql>
+
+	<!-- 实体映射 -->
+	<resultMap type="com.sys.entity.UserBean" id="Base_Column_Mapper">
+		<id property="staffId" column="STAFF_ID" />
+		<result property="staffNo" column="STAFF_NO" />
+		<result property="staffName" column="STAFF_NAME" />
+		<result property="gender" column="GENDER" />
+		<result property="post" column="POST" />
+		<result property="linkPhone" column="LINK_PHONE" />
+		<result property="emailAddr" column="EMAIL_ADDR" />
+		<result property="birthDate" column="BIRTH_DATE" />
+		<result property="birthDateStr" column="birthDateStr" />
+		<result property="photoPath" column="PHOTO_PATH" />
+		<result property="createDateStr" column="CREATE_DATE" />
+		<result property="updateDateStr" column="UPDATE_DATE" />
+		<result property="qq" column="QQ" />
+		<result property="wxCode" column="WX_CODE" />
+		<result property="createByName" column="CREATE_BY" />
+		<result property="updateByName" column="UPDATE_BY" />
+		<result property="remark" column="REMARK" />
+		<result property="orderFlag" column="ORDER_FLAG" />
+		<result property="enabledFlag" column="ENABLED_FLAG" />
+		<result property="education" column="EDUCATION" />
+		<result property="sysFlag" column="SYS_FLAG" />
+	</resultMap>
+
+	<select id="findUserList" resultType="com.sys.entity.UserBean" resultMap="Base_Column_Mapper">
+		select <include refid="Base_Column_List" /> from sys_user t
+	</select>
+
+	<!-- 系统登录 -->
+	<select id="userlogin" parameterType="java.lang.String" resultType="com.sys.entity.UserBean" resultMap="Base_Column_Mapper">
+		select
+		STAFF_ID,STAFF_NO,STAFF_NAME,GENDER,POST,LINK_PHONE,EMAIL_ADDR,STAFF_STATE,PHOTO_PATH,REMARK,ORDER_FLAG,ENABLED_FLAG,
+		QQ,WX_CODE,CREATE_BY,UPDATE_BY,PWD,SYS_FLAG,UPDATE_DATE,DATE_FORMAT(t.BIRTH_DATE,'%Y-%m-%d%H:%m') CREATE_DATE,EDUCATION
+		from sys_user t where t.STAFF_NO = #{staffNo}
+	</select>
+
+	<!-- 根据ID查询 -->
+	<select id="findById" resultType="com.sys.entity.UserBean" parameterType="java.lang.String" resultMap="Base_Column_Mapper">
+		select <include refid="Base_Column_List" /> from sys_user t where 1=1 and t.ENABLED_FLAG='1' and t.STAFF_ID =#{staffId}
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="findByPage" resultType="java.util.List" resultMap="Base_Column_Mapper">
+		select
+		STAFF_ID,STAFF_NO,STAFF_NAME,POST,LINK_PHONE,EMAIL_ADDR,STAFF_STATE,PHOTO_PATH,QQ,WX_CODE,REMARK,ORDER_FLAG
+		PWD,DATE_FORMAT(t.CREATE_DATE,'%Y-%m-%d %H:%i')
+		CREATE_DATE,DATE_FORMAT(t.UPDATE_DATE,'%Y-%m-%d %H:%i') UPDATE_DATE,
+		(SELECT b.DIC_NAME FROM sys_dictionary b WHERE b.DIC_CODE=t.SYS_FLAG
+		AND b.TYPE_CODE='SYS_FLAG') SYS_FLAG,
+		(SELECT b.DIC_NAME FROM sys_dictionary b WHERE b.DIC_CODE=t.EDUCATION AND
+		b.TYPE_CODE='EDUCATION') EDUCATION,
+		(SELECT b.DIC_NAME FROM sys_dictionary b WHERE b.DIC_CODE=t.GENDER AND
+		b.TYPE_CODE='GENDER') GENDER,
+		(SELECT A.DIC_NAME FROM sys_dictionary A WHERE A.DIC_CODE=t.ENABLED_FLAG AND
+		A.TYPE_CODE='ENABLED_FLAG') ENABLED_FLAG,
+		DATE_FORMAT(t.BIRTH_DATE,'%Y-%m-%d') birthDateStr,(SELECT S.STAFF_NAME
+		FROM SYS_USER S WHERE S.STAFF_ID=t.CREATE_BY) CREATE_BY,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.UPDATE_BY) UPDATE_BY
+		from sys_user t where 1=1 and t.ENABLED_FLAG='1'
+		<if test="param0 !=null and param0 !='' ">
+			and t.STAFF_NAME LIKE CONCAT('%','${param0}','%' )
+		</if>
+		<if test="param1 !=null and param1 !='' ">
+			and t.STAFF_NO LIKE CONCAT('%','${param1}','%' )
+		</if>
+		<if test="param2 !=null and param2 !='' ">
+			and t.SYS_FLAG = #{param2}
+		</if>
+		<if test="param3 !=null and param3 !='' ">
+			and t.GENDER = #{param3}
+		</if>
+		<if test="param4 !=null and param4 !='' ">
+			and t.STAFF_STATE = #{param4}
+		</if>
+		<if test="pageNow != null and pageSize != null">
+			limit #{pageNow},#{pageSize}
+		</if>
+	</select>
+
+	<!-- 总数量 -->
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) cnt from sys_user t where 1=1
+		<if test="param0 !=null and param0 !='' ">
+			and t.STAFF_NAME LIKE CONCAT('%','${param0}','%' )
+		</if>
+		<if test="param1 !=null and param1 !='' ">
+			and t.STAFF_NO LIKE CONCAT('%','${param1}','%' )
+		</if>
+		<if test="param2 !=null and param2 !='' ">
+			and t.SYS_FLAG = #{param2}
+		</if>
+		<if test="param3 !=null and param3 !='' ">
+			and t.GENDER = #{param3}
+		</if>
+		<if test="param4 !=null and param4 !='' ">
+			and t.STAFF_STATE = #{param4}
+		</if>
+	</select>
+
+	<!-- 新增 -->
+	<insert id="addUser" parameterType="com.sys.entity.UserBean">
+		INSERT INTO
+		sys_user(STAFF_ID,STAFF_NO,STAFF_NAME,GENDER,POST,LINK_PHONE,EMAIL_ADDR,STAFF_STATE,PHOTO_PATH,
+		CREATE_DATE,BIRTH_DATE,ORDER_FLAG,REMARK,ENABLED_FLAG,UPDATE_BY,UPDATE_DATE,CREATE_BY,QQ,WX_CODE,PWD,SYS_FLAG,EDUCATION)
+		VALUES(#{staffId,jdbcType=VARCHAR},#{staffNo},#{staffName},#{gender},#{post},#{linkPhone},#{emailAddr},#{staffState},#{photoPath},#{createDate},
+		#{birthDate},#{orderFlag},#{remark},#{enabledFlag},#{updateBy},#{updateDate},#{createBy},#{qq},#{wxCode},#{pwd},#{sysFlag},#{education})
+	</insert>
+
+	<!-- 修改 -->
+	<update id="updateUser" parameterType="com.sys.entity.UserBean">
+		UPDATE sys_user SET
+		STAFF_NO=#{staffNo},STAFF_NAME=#{staffName},GENDER=#{gender},POST=#{post},LINK_PHONE=#{linkPhone},EMAIL_ADDR=#{emailAddr},
+		STAFF_STATE=#{staffState},PHOTO_PATH=#{photoPath},ORDER_FLAG=#{orderFlag},BIRTH_DATE=#{birthDate},QQ=#{qq},REMARK=#{remark},WX_CODE=#{wxCode},
+		UPDATE_BY=#{updateBy},SYS_FLAG=#{sysFlag},UPDATE_DATE=#{updateDate},EDUCATION=#{education}
+		where STAFF_ID=#{staffId,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 物理删除 -->
+	<update id="removeUser" parameterType="java.lang.String">
+		UPDATE sys_user SET ENABLED_FLAG='0' WHERE STAFF_ID=#{staffId,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 删除 -->
+	<delete id="deleteUser" parameterType="java.lang.String">
+		DELETE from sys_user WHERE STAFF_ID=#{staffId,jdbcType=VARCHAR}
+	</delete>
+
+	<!-- 获得最大序列号 -->
+	<select id="getMaxOrderFlag" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT IFNULL((MAX(t.ORDER_FLAG)+1),1) flag FROM sys_user t WHERE t.ENABLED_FLAG='1'
+	</select>
+
+	<!-- 已选择用户 -->
+	<select id="findSelectRole" parameterType="java.lang.String" resultType="java.util.List" resultMap="Base_Column_Mapper">
+		select STAFF_ID,STAFF_NAME,(SELECT b.DIC_NAME FROM sys_dictionary b WHERE
+		b.DIC_CODE=t.SYS_FLAG AND b.TYPE_CODE='SYS_FLAG') SYS_FLAG from
+		sys_user t,sys_user_role r where t.STAFF_ID=r.USER_ID
+		AND r.ROLE_ID = #{roleId}
+	</select>
+
+	<!-- 未选择用户 -->
+	<select id="findNoSelectRole" parameterType="java.lang.String" resultType="java.util.List" resultMap="Base_Column_Mapper">
+		select STAFF_ID,STAFF_NAME,(SELECT b.DIC_NAME FROM sys_dictionary b WHERE
+		b.DIC_CODE=t.SYS_FLAG AND b.TYPE_CODE='SYS_FLAG') SYS_FLAG from
+		sys_user t where t.STAFF_ID NOT IN (SELECT r.USER_ID FROM
+		sys_user_role r WHERE r.ROLE_ID = #{roleId})
+	</select>
+
+</mapper>

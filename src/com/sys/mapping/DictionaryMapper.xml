@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sys.dao.DictionaryMapper">
+	
+	<!-- 数据库字段 -->
+	<sql id="Base_Column_List" >
+	  DIC_ID,TYPE_ID,DIC_NAME,DIC_CODE,TYPE_CODE,ORDER_FLAG,REMARK,ENABLED_FLAG,CREATE_BY,CREATE_DATE,UPDATE_BY,UPDATE_DATE
+  	</sql>
+  	
+  	<!-- 实体映射 -->
+	<resultMap type="com.sys.entity.DictionaryBean" id="Base_Column_Mapper">
+		<id property="dicId" column="DIC_ID"/>
+		<result property="typeCode" column="TYPE_CODE"/>
+		<result property="typeName" column="TYPE_NAME"/>
+		<result property="dicName" column="DIC_NAME"/>
+		<result property="dicCode" column="DIC_CODE"/>
+		<result property="orderFlag" column="ORDER_FLAG"/>
+		<result property="remark" column="REMARK"/>
+		<result property="enabledFlag" column="ENABLED_FLAG"/>
+		<result property="createBy" column="CREATE_BY"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateBy" column="UPDATE_BY"/>
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="createByName" column="createByName"/>
+		<result property="createDateStr" column="createDateStr"/>
+		<result property="updateByName" column="updateByName"/>
+		<result property="updateDateStr" column="updateDateStr" />
+		<result property="enabledFlagStr" column="enabledFlagStr" />
+	</resultMap>
+	
+	<!-- 分页查询 -->
+	<select id="findDictionaryByPage" parameterType="java.util.Map" resultMap="Base_Column_Mapper">
+		select <include refid="Base_Column_List" />,(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.CREATE_BY) createByName,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.UPDATE_BY) updateByName,DATE_FORMAT(t.CREATE_DATE,'%Y-%m-%d %H:%i') createDateStr,
+		(SELECT A.DIC_NAME FROM sys_dictionary A WHERE A.DIC_CODE=t.ENABLED_FLAG AND A.TYPE_CODE='ENABLED_FLAG') enabledFlagStr,DATE_FORMAT(t.UPDATE_DATE,'%Y-%m-%d %H:%i') updateDateStr,
+    	(SELECT A.TYPE_NAME FROM sys_dic_type A WHERE A.TYPE_CODE=t.TYPE_CODE) TYPE_NAME from sys_dictionary t where 1=1 and t.ENABLED_FLAG='1'
+    	<if test="param0 !=null and param0 !='' ">
+    		and t.DIC_NAME LIKE CONCAT('%','${param0}','%')
+    	</if>
+    	<if test="param1 !=null and param1 !='' ">
+    		and t.DIC_CODE LIKE CONCAT('%','${param1}','%')
+    	</if>
+    	<if test="param2 !=null and param2 !='' ">
+    		and t.TYPE_CODE = #{param2}
+    	</if>
+    	ORDER BY t.TYPE_CODE
+    	<if test="pageNow != null and pageSize != null">
+		  limit #{pageNow},#{pageSize}
+		</if>
+	</select>
+    
+    <!-- 总数量 -->
+    <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    	SELECT count(1) cnt FROM sys_dictionary t WHERE 1=1 and t.ENABLED_FLAG='1' 
+    	<if test="param0 !=null and param0 !='' ">
+    		and t.DIC_NAME LIKE CONCAT('%','${param0}','%')
+    	</if>
+    	<if test="param1 !=null and param1 !='' ">
+    		and t.DIC_CODE LIKE CONCAT('%','${param1}','%')
+    	</if>
+    	<if test="param2 !=null and param2 !='' ">
+    		and t.TYPE_ID = #{param2}
+    	</if>
+    </select>
+    
+    <!-- 根据ID查询 -->
+    <select id="findByDictionaryId" resultType="com.sys.entity.DictionaryBean" parameterType="java.lang.String" resultMap="Base_Column_Mapper">
+		select <include refid="Base_Column_List" /> from sys_dictionary t where 1=1 and t.ENABLED_FLAG='1' and t.DIC_ID = #{dicId}
+	</select>
+	
+	<!-- 查询list集合 -->
+	<select id="findDictionaryList" resultType="List" parameterType="java.lang.String" resultMap="Base_Column_Mapper">
+		select t.TYPE_ID,T.DIC_CODE,t.DIC_NAME,t.ORDER_FLAG,t.REMARK,t.ENABLED_FLAG,t.CREATE_BY,T.DIC_ID,
+		(SELECT A.TYPE_NAME FROM sys_dic_type A WHERE A.TYPE_CODE=t.TYPE_CODE) TYPE_NAME,t.TYPE_CODE,
+    	t.CREATE_DATE,t.UPDATE_BY,t.UPDATE_DATE from sys_dictionary t where 1=1 and t.ENABLED_FLAG='1'
+	</select>
+	
+	<!-- 根据编码查询 -->
+	<select id="findByTypeCode" resultType="List" parameterType="java.util.Map" resultMap="Base_Column_Mapper">
+		select t.TYPE_ID,T.DIC_CODE,t.DIC_NAME,t.TYPE_CODE from sys_dictionary t where 1=1 and t.ENABLED_FLAG='1'
+		<if test="typeCode !=null and typeCode!=''">
+			AND t.TYPE_CODE=#{typeCode}
+		</if>
+		order by t.ORDER_FLAG 
+	</select>
+	
+	<!-- 获得最大序列号 -->
+	<select id="getMaxOrderFlag" resultType="java.lang.Integer">
+		SELECT IFNULL((MAX(t.ORDER_FLAG)+1),1) flag FROM sys_dictionary t WHERE t.ENABLED_FLAG='1'
+	</select>
+   
+	<!-- 新增 -->
+    <insert id="addDictionary" parameterType="com.sys.entity.DictionaryBean">
+    	INSERT INTO sys_dictionary(DIC_ID,TYPE_CODE,DIC_NAME,DIC_CODE,ORDER_FLAG,REMARK,ENABLED_FLAG,UPDATE_BY,UPDATE_DATE,CREATE_By,CREATE_DATE) 
+    	VALUES(#{dicId,jdbcType=VARCHAR},#{typeCode},#{dicName},#{dicCode},#{orderFlag},#{remark},#{enabledFlag},#{updateBy},#{updateDate},#{createBy},#{createDate})
+    </insert>
+    
+	<!-- 修改 -->
+    <update id="updateDictionary" parameterType="com.sys.entity.DictionaryBean">
+    	UPDATE sys_dictionary SET TYPE_CODE=#{typeCode},DIC_NAME=#{dicName},DIC_CODE=#{dicCode},ORDER_FLAG=#{orderFlag},
+   		REMARK=#{remark},ENABLED_FLAG=#{enabledFlag},UPDATE_BY=#{updateBy},UPDATE_DATE=#{updateDate}
+    	WHERE DIC_ID=#{dicId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 逻辑删除 -->
+    <update id="removeDictionary" parameterType="java.lang.String">
+    	UPDATE sys_dictionary SET ENABLED_FLAG='0' WHERE DIC_ID=#{dicId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 物理删除 -->
+    <delete id="deleteDictionary" parameterType="java.lang.String">
+    	DELETE from sys_dictionary WHERE DIC_ID=#{dicId}
+    </delete>
+    
+</mapper>

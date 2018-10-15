@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basic.dao.RoomInfoDao">
+	<!-- 映射 -->
+  <resultMap id="baseRoomResultMap" type="com.basic.entity.RoomInfoBean">
+    <id column="ROOM_ID" jdbcType="VARCHAR" property="roomId" />
+    <result column="ROOM_NUMBER" jdbcType="VARCHAR" property="roomNumber" />
+    <result column="ROOM_TYPE" jdbcType="VARCHAR" property="roomType" />
+    <result column="FLOOR" jdbcType="VARCHAR" property="floor" />
+    <result column="ROOM_STATE" jdbcType="VARCHAR" property="roomState" />
+    <result column="ROOM_TEL" jdbcType="VARCHAR" property="roomTel" />
+    <result column="CUST_MANAGER_ID" jdbcType="VARCHAR" property="custManagerId" />
+    <result column="CUST_MANAGER" jdbcType="VARCHAR" property="custManager" />
+    <result column="HOUSE_NUMBER" jdbcType="VARCHAR" property="houseNumber" />
+    <result column="ROOM_PRICE" jdbcType="DECIMAL" property="roomPrice" />
+    <result column="ROOM_AEAR" jdbcType="VARCHAR" property="roomAear" />
+    <result column="ROOM_CONFIG" jdbcType="VARCHAR" property="roomConfig" />
+    <result column="ROOM_DESC" jdbcType="VARCHAR" property="roomDesc" />
+    <result column="DEPOSIT" jdbcType="DECIMAL" property="deposit" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="ORDER_FLAG" jdbcType="INTEGER" property="orderFlag" />
+    <result column="enabledFlagName" jdbcType="VARCHAR" property="enabledFlagName" />
+    <result column="ENABLED_FLAG" jdbcType="INTEGER" property="enabledFlag" />
+    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
+    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
+    <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
+  	<result property="createDateStr" column="createDateStr" />
+	<result property="updateDateStr" column="updateDateStr" />
+	<result property="createByName" column="createByName" />
+	<result property="updateByName" column="updateByName" />
+  </resultMap>
+  
+  <!-- 字段 -->
+  <sql id="Base_Column_List">
+    ROOM_ID, ROOM_NUMBER, ROOM_TYPE, FLOOR, ROOM_STATE, ROOM_TEL, CUST_MANAGER_ID, CUST_MANAGER, 
+    HOUSE_NUMBER, ROOM_PRICE, ROOM_AEAR, ROOM_CONFIG, ROOM_DESC, DEPOSIT, REMARK, ORDER_FLAG, 
+    ENABLED_FLAG, CREATE_BY, CREATE_DATE, UPDATE_BY, UPDATE_DATE
+  </sql>
+  
+  <!-- 根据ID查询 -->
+  <select id="findRoomById" parameterType="java.lang.String" resultMap="baseRoomResultMap">
+    select <include refid="Base_Column_List" /> from hotel_room_info where ROOM_ID = #{roomId,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据ID删除-->
+  <delete id="deleteRoomById" parameterType="java.lang.String">
+    delete from hotel_room_info where ROOM_ID = #{roomId,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 插入 -->
+  <insert id="insertRoom" parameterType="com.basic.entity.RoomInfoBean">
+    insert into hotel_room_info (ROOM_ID, ROOM_NUMBER, ROOM_TYPE,FLOOR, ROOM_STATE, ROOM_TEL, 
+      CUST_MANAGER_ID, CUST_MANAGER, HOUSE_NUMBER,ROOM_PRICE, ROOM_AEAR, ROOM_CONFIG, 
+      ROOM_DESC, DEPOSIT, REMARK, ORDER_FLAG, ENABLED_FLAG, CREATE_BY, 
+      CREATE_DATE, UPDATE_BY, UPDATE_DATE)
+    values (#{roomId,jdbcType=VARCHAR}, #{roomNumber,jdbcType=VARCHAR}, #{roomType,jdbcType=VARCHAR}, 
+      #{floor,jdbcType=VARCHAR}, #{roomState,jdbcType=VARCHAR}, #{roomTel,jdbcType=VARCHAR}, 
+      #{custManagerId,jdbcType=VARCHAR}, #{custManager,jdbcType=VARCHAR}, #{houseNumber,jdbcType=VARCHAR}, 
+      #{roomPrice,jdbcType=DECIMAL}, #{roomAear,jdbcType=VARCHAR}, #{roomConfig,jdbcType=VARCHAR}, 
+      #{roomDesc,jdbcType=VARCHAR}, #{deposit,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR}, 
+      #{orderFlag,jdbcType=INTEGER}, #{enabledFlag,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  
+  <!-- 判断插入 -->
+  <insert id="insertRoomSelective" parameterType="com.basic.entity.RoomInfoBean">
+    insert into hotel_room_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roomId != null">
+        ROOM_ID,
+      </if>
+      <if test="roomNumber != null">
+        ROOM_NUMBER,
+      </if>
+      <if test="roomType != null">
+        ROOM_TYPE,
+      </if>
+      <if test="floor != null">
+        FLOOR,
+      </if>
+      <if test="roomState != null">
+        ROOM_STATE,
+      </if>
+      <if test="roomTel != null">
+        ROOM_TEL,
+      </if>
+      <if test="custManagerId != null">
+        CUST_MANAGER_ID,
+      </if>
+      <if test="custManager != null">
+        CUST_MANAGER,
+      </if>
+      <if test="houseNumber != null">
+        HOUSE_NUMBER,
+      </if>
+      <if test="roomPrice != null">
+        ROOM_PRICE,
+      </if>
+      <if test="roomAear != null">
+        ROOM_AEAR,
+      </if>
+      <if test="roomConfig != null">
+        ROOM_CONFIG,
+      </if>
+      <if test="roomDesc != null">
+        ROOM_DESC,
+      </if>
+      <if test="deposit != null">
+        DEPOSIT,
+      </if>
+      <if test="remark != null">
+        REMARK,
+      </if>
+      <if test="orderFlag != null">
+        ORDER_FLAG,
+      </if>
+      <if test="enabledFlag != null">
+        ENABLED_FLAG,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roomId != null">
+        #{roomId,jdbcType=VARCHAR},
+      </if>
+      <if test="roomNumber != null">
+        #{roomNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="roomType != null">
+        #{roomType,jdbcType=VARCHAR},
+      </if>
+      <if test="floor != null">
+        #{floor,jdbcType=VARCHAR},
+      </if>
+      <if test="roomState != null">
+        #{roomState,jdbcType=VARCHAR},
+      </if>
+      <if test="roomTel != null">
+        #{roomTel,jdbcType=VARCHAR},
+      </if>
+      <if test="custManagerId != null">
+        #{custManagerId,jdbcType=VARCHAR},
+      </if>
+      <if test="custManager != null">
+        #{custManager,jdbcType=VARCHAR},
+      </if>
+      <if test="houseNumber != null">
+        #{houseNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="roomPrice != null">
+        #{roomPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="roomAear != null">
+        #{roomAear,jdbcType=VARCHAR},
+      </if>
+      <if test="roomConfig != null">
+        #{roomConfig,jdbcType=VARCHAR},
+      </if>
+      <if test="roomDesc != null">
+        #{roomDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="deposit != null">
+        #{deposit,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderFlag != null">
+        #{orderFlag,jdbcType=INTEGER},
+      </if>
+      <if test="enabledFlag != null">
+        #{enabledFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 修改 -->
+  <update id="updateRoomSelective" parameterType="com.basic.entity.RoomInfoBean">
+    update hotel_room_info
+    <set>
+      <if test="roomNumber != null">
+        ROOM_NUMBER = #{roomNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="roomType != null">
+        ROOM_TYPE = #{roomType,jdbcType=VARCHAR},
+      </if>
+      <if test="floor != null">
+        FLOOR = #{floor,jdbcType=VARCHAR},
+      </if>
+      <if test="roomState != null">
+        ROOM_STATE = #{roomState,jdbcType=VARCHAR},
+      </if>
+      <if test="roomTel != null">
+        ROOM_TEL = #{roomTel,jdbcType=VARCHAR},
+      </if>
+      <if test="custManagerId != null">
+        CUST_MANAGER_ID = #{custManagerId,jdbcType=VARCHAR},
+      </if>
+      <if test="custManager != null">
+        CUST_MANAGER = #{custManager,jdbcType=VARCHAR},
+      </if>
+      <if test="houseNumber != null">
+        HOUSE_NUMBER = #{houseNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="roomPrice != null">
+        ROOM_PRICE = #{roomPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="roomAear != null">
+        ROOM_AEAR = #{roomAear,jdbcType=VARCHAR},
+      </if>
+      <if test="roomConfig != null">
+        ROOM_CONFIG = #{roomConfig,jdbcType=VARCHAR},
+      </if>
+      <if test="roomDesc != null">
+        ROOM_DESC = #{roomDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="deposit != null">
+        DEPOSIT = #{deposit,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderFlag != null">
+        ORDER_FLAG = #{orderFlag,jdbcType=INTEGER},
+      </if>
+      <if test="enabledFlag != null">
+        ENABLED_FLAG = #{enabledFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ROOM_ID = #{roomId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据ID修改 -->
+  <update id="updateRoomById" parameterType="com.basic.entity.RoomInfoBean">
+    update hotel_room_info
+    set ROOM_NUMBER = #{roomNumber,jdbcType=VARCHAR},
+      ROOM_TYPE = #{roomType,jdbcType=VARCHAR},
+      FLOOR = #{floor,jdbcType=VARCHAR},
+      ROOM_STATE = #{roomState,jdbcType=VARCHAR},
+      ROOM_TEL = #{roomTel,jdbcType=VARCHAR},
+      CUST_MANAGER_ID = #{custManagerId,jdbcType=VARCHAR},
+      CUST_MANAGER = #{custManager,jdbcType=VARCHAR},
+      HOUSE_NUMBER = #{houseNumber,jdbcType=VARCHAR},
+      ROOM_PRICE = #{roomPrice,jdbcType=DECIMAL},
+      ROOM_AEAR = #{roomAear,jdbcType=VARCHAR},
+      ROOM_CONFIG = #{roomConfig,jdbcType=VARCHAR},
+      ROOM_DESC = #{roomDesc,jdbcType=VARCHAR},
+      DEPOSIT = #{deposit,jdbcType=DECIMAL},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      ORDER_FLAG = #{orderFlag,jdbcType=INTEGER},
+      ENABLED_FLAG = #{enabledFlag,jdbcType=INTEGER},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
+    where ROOM_ID = #{roomId,jdbcType=VARCHAR}
+  </update>
+
+	<!-- 分页查询 -->
+	<select id="findRoomByPage" parameterType="java.util.Map" resultMap="baseRoomResultMap">
+		SELECT  ROOM_ID, ROOM_NUMBER, (SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='ROOM_TYPE' and a.DIC_CODE=t.ROOM_TYPE) ROOM_TYPE,
+	    (SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='ROOM_FLOOR' and a.DIC_CODE=t.FLOOR) FLOOR, ROOM_TEL,
+	    (SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='ROOM_STATE' and a.DIC_CODE=t.ROOM_STATE) ROOM_STATE, 
+	    (SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='ENABLED_FLAG' and a.DIC_CODE=t.ENABLED_FLAG) enabledFlagName,
+	    (SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='HOUSE_NUMBER' and a.DIC_CODE=t.HOUSE_NUMBER) HOUSE_NUMBER, 
+	    CUST_MANAGER_ID, CUST_MANAGER,ROOM_AEAR, ROOM_CONFIG, ROOM_DESC, DEPOSIT, REMARK, ORDER_FLAG, ROOM_PRICE,
+	    (SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.CREATE_BY) createByName,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=t.UPDATE_BY) updateByName,
+		DATE_FORMAT(t.CREATE_DATE,'%Y-%m-%d %H:%i') createDateStr,DATE_FORMAT(t.UPDATE_DATE,'%Y-%m-%d %H:%i') updateDateStr,
+	    CREATE_BY, CREATE_DATE, UPDATE_BY, UPDATE_DATE from hotel_room_info t where 1=1 and t.ENABLED_FLAG='1'
+	    <if test="param0 != null and param0 != '' ">
+	    	AND t.ROOM_NUMBER LIKE CONCAT('%','${param0}','%' )
+	    </if>
+	    <!-- &gt; 大于    &lt;小于  -->
+	    <!-- <if test="param1 != null and param1 != '' and param2 != null and param2 != '' ">
+	    	AND t.ROOM_PRICE &gt;= #{param1} and t.ROOM_PRICE &lt;= #{param2}
+	    </if> -->
+	    <!-- 价格区间 -->
+		<choose>
+			<when test="param1 != '' and param1!=null and param2 != '' and param2 != null">
+				AND t.ROOM_PRICE &gt;= #{param1} and t.ROOM_PRICE &lt;= #{param2}
+			</when>
+			<when test="param2 != '' and param2 != null">
+				and t.ROOM_PRICE &lt;= #{param2}
+			</when>
+			<when test="param1 != '' and param1 != null">
+				and t.ROOM_PRICE &gt;= #{param1}
+			</when>
+			<otherwise> and 1=1</otherwise>
+		</choose>
+	    <if test="param3 != null and param3 != '' ">
+	    	AND t.ROOM_TYPE= #{param3}
+	    </if>
+	    <if test="param4 != null and param4 != '' ">
+	    	AND t.ROOM_STATE = #{param4}
+	    </if>
+	    <if test="param5 != null and param5 != '' ">
+	    	AND t.FLOOR = #{param5}
+	    </if>
+    	<if test="pageNow != null and pageSize != null">
+		  ORDER BY ROOM_NUMBER ASC limit #{pageNow},#{pageSize}
+		</if>
+	</select>  
+	
+	<!-- 获得数量 -->
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) cnt from hotel_room_info t where 1=1 and t.ENABLED_FLAG='1'
+		 <if test="param0 != null and param0 != '' ">
+	    	AND t.ROOM_NUMBER LIKE CONCAT('%','${param0}','%' )
+	    </if>
+	    <!-- &gt; 大于    &lt;小于  -->
+	    <!-- <if test="param1 != null and param1 != '' and param2 != null and param2 != '' ">
+	    	AND t.ROOM_PRICE &gt;= #{param1} and t.ROOM_PRICE &lt;= #{param2}
+	    </if> -->
+	    <!-- 价格区间 -->
+		<choose>
+			<when test="param1 != '' and param1!=null and param2 != '' and param2 != null">
+				AND t.ROOM_PRICE &gt;= #{param1} and t.ROOM_PRICE &lt;= #{param2}
+			</when>
+			<when test="param2 != '' and param2 != null">
+				and t.ROOM_PRICE &lt;= #{param2}
+			</when>
+			<when test="param1 != '' and param1 != null">
+				and t.ROOM_PRICE &gt;= #{param1}
+			</when>
+			<otherwise> and 1=1</otherwise>
+		</choose>
+	    <if test="param3 != null and param3 != '' ">
+	    	AND t.ROOM_TYPE= #{param3}
+	    </if>
+	    <if test="param4 != null and param4 != '' ">
+	    	AND t.ROOM_STATE = #{param4}
+	    </if>
+	    <if test="param5 != null and param5 != '' ">
+	    	AND t.FLOOR = #{param5}
+	    </if>
+	</select>  
+	
+	<!-- 获得最大序列号 -->
+	<select id="getMaxOrderFlag" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT IFNULL((MAX(t.ORDER_FLAG)+1),1) flag FROM hotel_room_info t WHERE t.ENABLED_FLAG='1'
+	</select>
+	
+</mapper>

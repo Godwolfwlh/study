@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.basic.dao.OccupancyDao" >
+  <resultMap id="BaseResultMap" type="com.basic.entity.OccupancyBean" >
+    <result column="PANCY_ID" property="pancyId" jdbcType="VARCHAR" />
+    <result column="CUST_ID" property="custId" jdbcType="VARCHAR" />
+    <result column="ROOM_ID" property="roomId" jdbcType="VARCHAR" />
+    <result column="CHECK_IN_DATE" property="checkInDate" jdbcType="TIMESTAMP" />
+    <result column="CHECK_OUT_DATE" property="checkOutDate" jdbcType="TIMESTAMP" />
+    <result column="PANCY_STATE" property="pancyState" jdbcType="VARCHAR" />
+    <result column="PREPAID_AMOUNT" property="prepaidAmount" jdbcType="DECIMAL" />
+    <result column="PREPAID_NUMBER" property="prepaidNumber" jdbcType="INTEGER" />
+    <result column="HOUSE_PRICE" property="housePrice" jdbcType="DECIMAL" />
+    <result column="DISCOUNT" property="discount" jdbcType="REAL" />
+    <result column="AMOUNT_COLLECT" property="amountCollect" jdbcType="DECIMAL" />
+    <result column="AMOUNT_OWE" property="amountOwe" jdbcType="DECIMAL" />
+    <result column="DEPOSIT" property="deposit" jdbcType="DECIMAL" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="ORDER_FLAG" property="orderFlag" jdbcType="INTEGER" />
+    <result column="ENABLED_FLAG" property="enabledFlag" jdbcType="INTEGER" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="PAID_TYPE" property="paidType" jdbcType="VARCHAR" />
+    <result column="PAY_STATE" property="payState" jdbcType="VARCHAR" />
+    <result column="CHECK_IN_DATE_VIEW" property="checkInDate" jdbcType="VARCHAR" />
+    <result column="CHECK_OUT_DATE_VIEW" property="checkOutDateView" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE_VIEW" property="createDateView" jdbcType="VARCHAR" />
+    <result column="UPDATE_DATE_VIEW" property="updateDateView" jdbcType="VARCHAR" />
+    <result property="createDateStr" column="createDateStr" />
+	<result property="updateDateStr" column="updateDateStr" />
+	<result property="createByName" column="createByName" />
+	<result property="updateByName" column="updateByName" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    PANCY_ID, CUST_ID, ROOM_ID, CHECK_IN_DATE, CHECK_OUT_DATE, PREPAID_AMOUNT, PREPAID_NUMBER, HOUSE_PRICE, DISCOUNT, 
+    AMOUNT_COLLECT,REMARK, ORDER_FLAG, ENABLED_FLAG, CREATE_BY,CREATE_DATE,AMOUNT_OWE,
+    UPDATE_BY,UPDATE_DATE,PREDETERMINED_DATE,PANCY_STATE,PAID_TYPE,PAY_STATE,
+    DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d %H:%i') CHECK_IN_DATE_VIEW,DATE_FORMAT(A.CHECK_OUT_DATE,'%Y-%m-%d %H:%i') CHECK_OUT_DATE_VIEW,
+	DATE_FORMAT(A.CREATE_DATE,'%Y-%m-%d %H:%i') CREATE_DATE_VIEW,DATE_FORMAT(A.UPDATE_DATE,'%Y-%m-%d %H:%i') UPDATE_DATE_VIEW
+  </sql>
+  
+  <!-- 根据ID查询 -->
+  <select id="findPancyById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List" /> from hotel_occupancy A where PANCY_ID = #{pancyId,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据ID删除 -->
+  <delete id="deletePancyById" parameterType="java.lang.String" >
+    delete from hotel_occupancy where PANCY_ID = #{pancyId,jdbcType=VARCHAR}
+  </delete>
+  
+   <!-- 根据ID删除 -->
+  <delete id="removePancyById" parameterType="java.lang.String" >
+    UPDATE hotel_occupancy SET ENABLED_FLAG='0' where PANCY_ID = #{pancyId,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insertPancy" parameterType="com.basic.entity.OccupancyBean" >
+    insert into hotel_occupancy (PANCY_ID, CUST_ID, ROOM_ID,CHECK_IN_DATE, CHECK_OUT_DATE,PREPAID_AMOUNT,
+      PREPAID_NUMBER, HOUSE_PRICE, DISCOUNT,AMOUNT_COLLECT,REMARK,ORDER_FLAG,ENABLED_FLAG, CREATE_BY, CREATE_DATE,
+      PANCY_STATE,UPDATE_BY, UPDATE_DATE,PAID_TYPE,PAY_STATE,AMOUNT_OWE)
+    values (#{pancyId,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, #{roomId,jdbcType=VARCHAR}, 
+      #{checkInDate,jdbcType=TIMESTAMP}, #{checkOutDate,jdbcType=TIMESTAMP}, #{prepaidAmount,jdbcType=DECIMAL}, 
+      #{prepaidNumber,jdbcType=INTEGER}, #{housePrice,jdbcType=DECIMAL}, #{discount,jdbcType=REAL}, 
+      #{amountCollect,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR}, #{orderFlag,jdbcType=INTEGER}, 
+      #{enabledFlag,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{pancyState,jdbcType=VARCHAR},#{updateBy,jdbcType=VARCHAR},
+      #{updateDate,jdbcType=TIMESTAMP},#{paidType,jdbcType=VARCHAR},#{payState,jdbcType=VARCHAR},#{amountOwe,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertPancySelective" parameterType="com.basic.entity.OccupancyBean" >
+    insert into hotel_occupancy
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="pancyId != null" >
+        PANCY_ID,
+      </if>
+      <if test="custId != null" >
+        CUST_ID,
+      </if>
+      <if test="roomId != null" >
+        ROOM_ID,
+      </if>
+      <if test="checkInDate != null" >
+        CHECK_IN_DATE,
+      </if>
+      <if test="checkOutDate != null" >
+        CHECK_OUT_DATE,
+      </if>
+      <if test="prepaidAmount != null" >
+        PREPAID_AMOUNT,
+      </if>
+      <if test="prepaidNumber != null" >
+        PREPAID_NUMBER,
+      </if>
+      <if test="housePrice != null" >
+        HOUSE_PRICE,
+      </if>
+      <if test="discount != null" >
+        DISCOUNT,
+      </if>
+      <if test="amountCollect != null" >
+        AMOUNT_COLLECT,
+      </if>
+      <if test="registerName != null" >
+        REGISTER_NAME,
+      </if>
+      <if test="registerId != null" >
+        REGISTER_ID,
+      </if>
+      <if test="registerDate != null" >
+        REGISTER_DATE,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="orderFlag != null" >
+        ORDER_FLAG,
+      </if>
+      <if test="enabledFlag != null" >
+        ENABLED_FLAG,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY,
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE,
+      </if>
+      <if test="pancyState != null" >
+        PANCY_STATE,
+      </if>
+      <if test="paidType != null" >
+        PAID_TYPE,
+      </if>
+      <if test="payState != null" >
+        PAY_STATE,
+      </if>
+      <if test="amountOwe != null" >
+        AMOUNT_OWE,
+      </if>
+      
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="pancyId != null" >
+        #{pancyId,jdbcType=VARCHAR},
+      </if>
+      <if test="custId != null" >
+        #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="roomId != null" >
+        #{roomId,jdbcType=VARCHAR},
+      </if>
+      <if test="checkInDate != null" >
+        #{checkInDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkOutDate != null" >
+        #{checkOutDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="prepaidAmount != null" >
+        #{prepaidAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="prepaidNumber != null" >
+        #{prepaidNumber,jdbcType=INTEGER},
+      </if>
+      <if test="housePrice != null" >
+        #{housePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="discount != null" >
+        #{discount,jdbcType=REAL},
+      </if>
+      <if test="amountCollect != null" >
+        #{amountCollect,jdbcType=DECIMAL},
+      </if>
+      <if test="registerName != null" >
+        #{registerName,jdbcType=VARCHAR},
+      </if>
+      <if test="registerId != null" >
+        #{registerId,jdbcType=VARCHAR},
+      </if>
+      <if test="registerDate != null" >
+        #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderFlag != null" >
+        #{orderFlag,jdbcType=INTEGER},
+      </if>
+      <if test="enabledFlag != null" >
+        #{enabledFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pancyState != null" >
+        #{pancyState,jdbcType=VARCHAR},
+      </if>
+      <if test="paidType != null" >
+        #{paidType,jdbcType=VARCHAR},
+      </if>
+      <if test="payState != null" >
+        #{payState,jdbcType=VARCHAR},
+      </if>
+      <if test="amountOwe != null" >
+        #{amountOwe,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+   <!-- 修改 -->
+  <update id="updatePancySelective" parameterType="com.basic.entity.OccupancyBean" >
+    update hotel_occupancy
+    <set >
+      <if test="custId != null" >
+        CUST_ID = #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="roomId != null" >
+         ROOM_ID = #{roomId,jdbcType=VARCHAR},
+      </if>
+      <if test="checkInDate != null" >
+        CHECK_IN_DATE = #{checkInDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkOutDate != null" >
+         CHECK_OUT_DATE = #{checkOutDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="prepaidAmount != null" >
+        PREPAID_AMOUNT = #{prepaidAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="prepaidNumber != null" >
+        PREPAID_NUMBER = #{prepaidNumber,jdbcType=INTEGER},
+      </if>
+      <if test="housePrice != null" >
+        HOUSE_PRICE = #{housePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="discount != null" >
+        DISCOUNT = #{discount,jdbcType=FLOAT},
+      </if>
+      <if test="amountCollect != null" >
+       AMOUNT_COLLECT = #{amountCollect,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderFlag != null" >
+        ORDER_FLAG = #{orderFlag,jdbcType=INTEGER},
+      </if>
+      <if test="enabledFlag != null" >
+        ENABLED_FLAG = #{enabledFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pancyState != null" >
+        PANCY_STATE=#{pancyState,jdbcType=VARCHAR},
+      </if>
+      <if test="paidType != null" >
+        PAID_TYPE=#{paidType,jdbcType=VARCHAR},
+      </if>
+      <if test="payState != null" >
+        PAY_STATE=#{payState,jdbcType=VARCHAR},
+      </if>
+      <if test="amountOwe != null" >
+        AMOUNT_OWE=#{amountOwe,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where PANCY_ID = #{pancyId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据ID修改 -->
+  <update id="updatePancyById" parameterType="com.basic.entity.OccupancyBean" >
+    update hotel_occupancy set CUST_ID = #{custId,jdbcType=VARCHAR},
+      ROOM_ID = #{roomId,jdbcType=VARCHAR},
+      CHECK_IN_DATE = #{checkInDate,jdbcType=TIMESTAMP},
+      CHECK_OUT_DATE = #{checkOutDate,jdbcType=TIMESTAMP},
+      PREPAID_AMOUNT = #{prepaidAmount,jdbcType=DECIMAL},
+      PREPAID_NUMBER = #{prepaidNumber,jdbcType=INTEGER},
+      HOUSE_PRICE = #{housePrice,jdbcType=DECIMAL},
+      DISCOUNT = #{discount,jdbcType=FLOAT},
+      AMOUNT_COLLECT = #{amountCollect,jdbcType=DECIMAL},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      PANCY_STATE=#{pancyState,jdbcType=VARCHAR},
+      PAID_TYPE=#{paidType,jdbcType=VARCHAR},
+      PAY_STATE=#{payState,jdbcType=VARCHAR},
+      AMOUNT_OWE=#{amountOwe,jdbcType=VARCHAR}
+    where PANCY_ID = #{pancyId,jdbcType=VARCHAR}
+  </update>
+  
+    <!-- 分页查询 -->
+	<select id="findPancyByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT PANCY_ID, CUST_ID, ROOM_ID, CHECK_IN_DATE, CHECK_OUT_DATE, PREPAID_AMOUNT,PAID_TYPE,
+		PREPAID_NUMBER, HOUSE_PRICE,DISCOUNT, AMOUNT_COLLECT,PAY_STATE,AMOUNT_OWE,
+		REMARK, ORDER_FLAG,ENABLED_FLAG, CREATE_BY,CREATE_DATE,UPDATE_BY, UPDATE_DATE
+	    PANCY_STATE,PREDETERMINED_DATE from hotel_occupancy t where 1=1
+    	<if test="pageNow != null and pageSize != null">
+		  limit #{pageNow},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="findByPage" parameterType="java.util.Map" resultMap="pancyResultMap">
+		SELECT A.PANCY_ID, A.CUST_ID, A.ROOM_ID, A.CHECK_IN_DATE, A.CHECK_OUT_DATE, A.PREPAID_AMOUNT, A.PREPAID_NUMBER, A.HOUSE_PRICE, A.DISCOUNT, 
+	    A.AMOUNT_COLLECT,A.REMARK, A.ORDER_FLAG, A.ENABLED_FLAG, A.CREATE_BY,A.CREATE_DATE,A.UPDATE_BY,A.UPDATE_DATE,A.PREDETERMINED_DATE,
+		 C.ROOM_NUMBER,C.ROOM_PRICE,C.DEPOSIT as AMOUNT_OWE,B.CUST_NAME,B.CARD_NUMBER,B.LINK_PHONE,B.BIRTH_DATE,B.AGE,B.ADDRESS,A.PAY_STATE,
+		<!-- (SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='PAY_STATE' and a.DIC_CODE=A.PAY_STATE) PAY_STATE, -->
+		(SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='PAID_TYPE' and a.DIC_CODE=A.PAID_TYPE) PAID_TYPE,
+		<!-- (SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='PANCY_STATE' and a.DIC_CODE=A.PANCY_STATE) PANCY_STATE, -->
+		(SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='GENDER' and a.DIC_CODE=B.GENDER) GENDER,A.PANCY_STATE,
+		(SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='ENABLED_FLAG' and a.DIC_CODE=A.ENABLED_FLAG) orderFlagName,
+		DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d %H:%i') CHECK_IN_DATE_VIEW,DATE_FORMAT(A.CHECK_OUT_DATE,'%Y-%m-%d %H:%i') CHECK_OUT_DATE_VIEW,
+		DATE_FORMAT(A.CREATE_DATE,'%Y-%m-%d %H:%i') CREATE_DATE_VIEW,DATE_FORMAT(A.UPDATE_DATE,'%Y-%m-%d %H:%i') UPDATE_DATE_VIEW,
+		(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=A.CREATE_BY) createByName,(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=A.UPDATE_BY) updateByName,
+		DATE_FORMAT(A.CREATE_DATE,'%Y-%m-%d %H:%i') createDateStr,DATE_FORMAT(A.UPDATE_DATE,'%Y-%m-%d %H:%i') updateDateStr
+		 FROM HOTEL_OCCUPANCY A LEFT JOIN HOTEL_CUSTOMER B ON A.CUST_ID=B.CUST_ID LEFT JOIN HOTEL_ROOM_INFO C ON C.ROOM_ID=A.ROOM_ID WHERE A.ENABLED_FLAG='1'
+		<if test="param0 != null and param0 != '' ">
+		  and B.CUST_NAME LIKE #{param0}
+		</if>
+		<if test="param1 != null and param1 != '' ">
+		  and B.CARD_NUMBER LIKE #{param1}
+		</if>
+		<if test="param2 != null and param2 != ''">
+		  and A.PANCY_STATE = #{param2}
+		</if>
+		<!-- 价格区间 -->
+		<choose>
+			<when test="param3 != '' and param3!=null and param4 != '' and param4 != null">
+				AND C.ROOM_PRICE &gt;= #{param3} and C.ROOM_PRICE &lt;= #{param4}
+			</when>
+			<when test="param4 != '' and param4 != null">
+				and C.ROOM_PRICE &lt;= #{param4}
+			</when>
+			<when test="param3 != '' and param3 != null">
+				and C.ROOM_PRICE &gt;= #{param3}
+			</when>
+			<otherwise> and 1=1</otherwise>
+		</choose>
+		<if test="param5 != null and param5 != ''">
+		  and C.ROOM_NUMBER = #{param5}
+		</if>
+		<!-- 日期选择 -->
+		<choose>
+			<when test="param6 != '' and param6!=null and param7 != '' and param7 != null">
+				AND DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d') &gt;= #{param6} and DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d') &lt;= #{param7}
+			</when>
+			<when test="param7 != '' and param7 != null">
+				and DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d') &lt;= #{param7}
+			</when>
+			<when test="param6 != '' and param6 != null">
+				and DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d') &gt;= #{param6}
+			</when>
+			<otherwise> and 1=1</otherwise>
+		</choose>
+		<!-- 缴费状态 -->
+		<if test="param8 != null and param8 != ''">
+		  and A.PAY_STATE = #{param8}
+		</if>
+    	<if test="pageNow != null and pageSize != null">
+		  limit #{pageNow},#{pageSize}
+		</if>
+	</select>  
+	  
+	<!-- 获得数量 -->
+	<select id="getPancyCount" parameterType="java.util.Map" resultType="int">
+		select count(1) cnt from  HOTEL_OCCUPANCY A LEFT JOIN HOTEL_CUSTOMER B ON A.CUST_ID=B.CUST_ID LEFT JOIN 
+		HOTEL_ROOM_INFO C ON C.ROOM_ID=A.ROOM_ID WHERE A.ENABLED_FLAG='1'
+		<if test="param0 != null and param0 != '' ">
+		  and B.CUST_NAME LIKE #{param0}
+		</if>
+		<if test="param1 != null and param1 != '' ">
+		  and B.CARD_NUMBER LIKE #{param1}
+		</if>
+		<if test="param2 != null and param2 != '' ">
+		  and A.PANCY_STATE = #{param2}
+		</if>
+		<!-- 价格区间 -->
+		<choose>
+			<when test="param3 != '' and param3!=null and param4 != '' and param4 != null">
+				AND C.ROOM_PRICE &gt;= #{param3} and C.ROOM_PRICE &lt;= #{param4}
+			</when>
+			<when test="param4 != '' and param4 != null">
+				and C.ROOM_PRICE &lt;= #{param4}
+			</when>
+			<when test="param3 != '' and param3 != null">
+				and C.ROOM_PRICE &gt;= #{param3}
+			</when>
+			<otherwise> and 1=1</otherwise>
+		</choose>
+		<if test="param5 != null and param5 != ''">
+		  and C.ROOM_NUMBER = #{param5}
+		</if>
+		<!-- 日期选择 -->
+		<choose>
+			<when test="param6 != '' and param6!=null and param7 != '' and param7 != null">
+				AND DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d') &gt;= #{param6} and DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d') &lt;= #{param7}
+			</when>
+			<when test="param7 != '' and param7 != null">
+				and DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d') &lt;= #{param7}
+			</when>
+			<when test="param6 != '' and param6 != null">
+				and DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d') &gt;= #{param6}
+			</when>
+			<otherwise> and 1=1</otherwise>
+		</choose>
+		<!-- 缴费状态 -->
+		<if test="param8 != null and param8 != '' ">
+		  and A.PAY_STATE = #{param8}
+		</if>
+	</select>  
+	
+	<!-- 获得最大序列号 -->
+	<select id="getPancyMaxOrderFlag" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT IFNULL((MAX(t.ORDER_FLAG)+1),1) flag FROM hotel_occupancy t WHERE t.ENABLED_FLAG='1'
+	</select>
+	
+	<!-- 客户映射 -->
+	<resultMap id="baseCustResultMap" type="com.basic.entity.CustomerBean" >
+	    <!-- <id column="CUST_ID" property="custId" jdbcType="VARCHAR" /> -->
+	    <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
+	    <result column="CARD_NUMBER" property="cardNumber" jdbcType="VARCHAR" />
+	    <result column="LINK_PHONE" property="linkPhone" jdbcType="VARCHAR" />
+	    <result column="GENDER" property="gender" jdbcType="VARCHAR" />
+	    <result column="GENDER_NAME" property="genderName" jdbcType="VARCHAR" />
+	    <result column="BIRTH_DATE" property="birthDate" jdbcType="VARCHAR" />
+	    <result column="AGE" property="age" jdbcType="VARCHAR" />
+	    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+	    <result column="LEAG_SCORE" property="leagScore" jdbcType="INTEGER" />
+	    <result column="IS_LEAGUER" property="isLeaguer" jdbcType="VARCHAR" />
+	    <result column="orderFlagName" property="orderFlagName" jdbcType="VARCHAR" />
+	  </resultMap>
+	  
+	  <!-- 房间映射 -->
+	  <resultMap id="baseRoomResultMap" type="com.basic.entity.RoomInfoBean">
+	    <result column="ROOM_NUMBER" jdbcType="VARCHAR" property="roomNumber" />
+	    <result column="ROOM_PRICE" jdbcType="DECIMAL" property="roomPrice" />
+	  </resultMap>
+	  
+	  <resultMap id="pancyResultMap" type="com.basic.entity.OccupancyBean" >
+	    <result column="PANCY_ID" property="pancyId" jdbcType="VARCHAR" />
+	    <result column="CUST_ID" property="custId" jdbcType="VARCHAR" />
+	    <result column="ROOM_ID" property="roomId" jdbcType="VARCHAR" />
+	    <result column="CHECK_IN_DATE" property="checkInDate" jdbcType="TIMESTAMP" />
+	    <result column="CHECK_OUT_DATE" property="checkOutDate" jdbcType="TIMESTAMP" />
+	    <result column="PREDETERMINED_DATE" property="predeterminedDate" jdbcType="TIMESTAMP" />
+	    <result column="PANCY_STATE" property="pancyState" jdbcType="VARCHAR" />
+	    <result column="PREPAID_AMOUNT" property="prepaidAmount" jdbcType="DECIMAL" />
+	    <result column="PREPAID_NUMBER" property="prepaidNumber" jdbcType="INTEGER" />
+	    <result column="HOUSE_PRICE" property="housePrice" jdbcType="DECIMAL" />
+	    <result column="DISCOUNT" property="discount" jdbcType="DECIMAL" />
+	    <result column="AMOUNT_COLLECT" property="amountCollect" jdbcType="DECIMAL" />
+	    <result column="AMOUNT_OWE" property="amountOwe" jdbcType="DECIMAL" />
+	    <result column="REGISTER_NAME" property="registerName" jdbcType="VARCHAR" />
+	    <result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" />
+	    <result column="REGISTER_DATE" property="registerDate" jdbcType="TIMESTAMP" />
+	    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+	    <result column="ORDER_FLAG" property="orderFlag" jdbcType="INTEGER" />
+	    <result column="ENABLED_FLAG" property="enabledFlag" jdbcType="INTEGER" />
+	    <result column="ENABLED_FLAG" property="enabledFlag" jdbcType="INTEGER" />
+	    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+	    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+	    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+	    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+	    <result column="PAID_TYPE" property="paidType" jdbcType="VARCHAR" />
+	    <result column="PAY_STATE" property="payState" jdbcType="VARCHAR" />
+	    <result column="CHECK_IN_DATE_VIEW" property="checkInDateView" jdbcType="VARCHAR" />
+		<result column="CHECK_OUT_DATE_VIEW" property="checkOutDateView" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE_VIEW" property="createDateView" jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE_VIEW" property="updateDateView" jdbcType="VARCHAR" />
+	    <!-- 将article的customerBean属性映射到userResultMap -->
+        <association property="customer" javaType="com.basic.entity.CustomerBean" resultMap="baseCustResultMap"/>  
+	    <!-- 将article的customerBean属性映射到userResultMap -->
+        <association property="roomInfo" javaType="com.basic.entity.RoomInfoBean" resultMap="baseRoomResultMap"/>  
+        
+	  </resultMap>
+	  
+	  <!-- 关联查询 -->
+	  <select id="queryAssoByPancyId" parameterType="java.lang.String" resultMap="pancyResultMap">
+		SELECT A.PANCY_ID, A.CUST_ID, A.ROOM_ID, DATE_FORMAT(A.CHECK_IN_DATE,'%Y-%m-%d %H:%i') CHECK_IN_DATE_VIEW, A.CHECK_IN_DATE,
+		 A.CHECK_OUT_DATE,DATE_FORMAT(A.CHECK_OUT_DATE,'%Y-%m-%d %H:%i') CHECK_OUT_DATE_VIEW,DATE_FORMAT(A.CREATE_DATE,'%Y-%m-%d %H:%i') CREATE_DATE_VIEW,
+		 DATE_FORMAT(A.UPDATE_DATE,'%Y-%m-%d %H:%i') UPDATE_DATE_VIEW,A.PREPAID_AMOUNT, A.PREPAID_NUMBER, A.HOUSE_PRICE, A.DISCOUNT,C.DEPOSIT, 
+	    A.AMOUNT_COLLECT,A.REMARK, A.ORDER_FLAG, A.ENABLED_FLAG, A.CREATE_BY,A.CREATE_DATE,A.UPDATE_BY,A.UPDATE_DATE,A.PREDETERMINED_DATE,
+		C.ROOM_NUMBER,C.ROOM_PRICE,B.CUST_NAME,B.CARD_NUMBER,B.LINK_PHONE,B.BIRTH_DATE,B.AGE,B.ADDRESS,A.AMOUNT_OWE,A.PAY_STATE,A.PAID_TYPE,
+		(SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='GENDER' and a.DIC_CODE=B.GENDER) GENDER_NAME,B.GENDER,A.PANCY_STATE,
+		(SELECT a.DIC_NAME FROM sys_dictionary a where a.TYPE_CODE='ENABLED_FLAG' and a.DIC_CODE=A.ENABLED_FLAG) orderFlagName
+		 FROM HOTEL_OCCUPANCY A,HOTEL_CUSTOMER B,HOTEL_ROOM_INFO C WHERE A.CUST_ID=B.CUST_ID AND A.ENABLED_FLAG='1' AND C.ROOM_ID=A.ROOM_ID AND
+		B.ENABLED_FLAG='1' AND A.PANCY_STATE != '5' AND C.ENABLED_FLAG='1' AND A.ENABLED_FLAG='1' AND A.PANCY_ID=#{pancyId}
+	</select>
+	  
+</mapper>

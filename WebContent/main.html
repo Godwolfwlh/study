@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>首页</title>
+<link rel="stylesheet" type="text/css" href="./script/layui/css/layui.css"></link>
+<link rel="stylesheet" type="text/css" href="./script/layui/css/modules/layer/default/layer.css"></link>
+<link rel="stylesheet" type="text/css" href="./script/layui/css/global.css" />
+<script type="text/javascript" src="./script/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="./script/json2.js"></script>
+<script type="text/javascript" src="./script/layui/layui.js"></script>
+<script type="text/javascript" src="./script/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="./script/common.js"></script>
+<style type="text/css">
+	.layui-nav .layui-badge, .layui-nav .layui-badge-dot {
+	    position:static;
+	    top: 50%;
+	    margin: -8px 6px 0;
+	}
+	.layui-btn {
+	    display: inline-block;
+	    height: 38px;
+	    line-height: 38px;
+	    padding: 0 18px;
+	    margin:11px 5px 0px 5px;
+	    background-color: #009688;
+	    color: #fff;
+	    white-space: nowrap;
+	    text-align: center;
+	    font-size: 14px;
+	    border: none;
+	    border-radius: 2px;
+	    cursor: default !inportant;
+	}
+</style>
+</head>
+<body>
+	<div class="layui-layout layui-layout-admin">
+		<div class="layui-header">
+			<div class="layui-logo">俐莱宾馆平台系统管理</div>
+			<ul class="layui-nav layui-layout-left" id="layui-nav">
+				<li class="layui-nav-item"><button class="layui-btn">剩余房间<span class="layui-badge layui-bg-gray">6</span></button></li>
+				<li class="layui-nav-item"><button class="layui-btn layui-bg-orange" >已订房间<span class="layui-badge layui-bg-gray">6</span></button></li>
+				<li class="layui-nav-item"><button class="layui-btn layui-btn-primary">今日退房<span class="layui-badge layui-btn-danger">6</span></button></li>
+				<li class="layui-nav-item"><button class="layui-btn layui-bg-blue">预订房间<span class="layui-badge layui-bg-gray">6</span></button></li>
+				<!-- <li class="layui-nav-item"><a href="javascript:;">系统菜单</a></li>
+				<li class="layui-nav-item"><a href="javascript:;">用户管理</a></li>
+				<li class="layui-nav-item"><a href="javascript:;">数据字典</a></li>
+				<li class="layui-nav-item"><a href="javascript:;">其它系统</a>
+					<dl class="layui-nav-child">
+						<dd>
+							<a href="">邮件管理</a>
+						</dd>
+						<dd>
+							<a href="">消息管理</a>
+						</dd>
+						<dd>
+							<a href="">授权管理</a>
+						</dd>
+					</dl>
+				</li> -->
+			</ul>
+			<ul class="layui-nav layui-layout-right">
+				<li class="layui-nav-item">
+					<a href="javascript:;"> <img src="./images/user.jpg" class="layui-nav-img"> 贤心</a>
+					<dl class="layui-nav-child">
+						<dd>
+							<a href="">基本资料</a>
+						</dd>
+						<dd>
+							<a href="">安全设置</a>
+						</dd>
+					</dl>
+				</li>
+				<li class="layui-nav-item"><a href="javascript:void(0);" onclick="admin.loginOut()">退出</a></li>
+			</ul>
+		</div>
+
+		<!-- 左侧菜单 -->
+		<div class="layui-side layui-bg-black">
+			<div class="layui-side-scroll">
+				<ul class="layui-nav layui-nav-tree" id="layui_nav">
+					<!-- <li class="layui-nav-item layui-nav-itemed">
+						<a href="javascript:;" onclick="admin.navItem(this)"> 
+							<i class="layui-icon layui-icon-component"></i> 
+							<cite>系统菜单</cite> 
+							<span class="layui-nav-more"></span>
+						</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="javascript:;" onclick="admin.addTab('11','分类菜单','./sys/menuType.html')">分类菜单</a>
+							</dd>
+							<dd>
+								<a href="javascript:;" onclick="admin.addTab('22','菜单配置','./sys/menu.html')">菜单配置</a>
+							</dd>
+							<dd>
+								<a href="javascript:;" onclick="admin.addTab('33','用户管理','./sys/userList.html')">用户管理</a>
+							</dd>
+							<dd>
+								<a href="javascript:;" onclick="admin.addTab('44','角色管理','./sys/role.html')">角色管理</a>
+							</dd>
+							<dd>
+								<a href="javascript:;" onclick="admin.addTab('55','菜单权限管理','./sys/roleMenu.html')">菜单权限管理</a>
+							</dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item">
+						<a href="javascript:;" onclick="admin.navItem(this)"> 
+							<i class="layui-icon layui-icon-component"></i> 
+							<cite>用户角色</cite> 
+							<span class="layui-nav-more"></span>
+						</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="javascript:;" onclick="admin.addTab('11','列表一','http://news.qq.com/world_index.shtml')">列表一</a>
+							</dd>
+							<dd>
+								<a href="javascript:;" onclick="admin.addTab('33','列表二','http://www.layui.com/doc/modules/layer.html')">列表二</a>
+							</dd>
+							<dd>
+								<a href="javascript:;" onclick="admin.addTab('33','列表三')">列表三</a>
+							</dd>
+						</dl>
+					</li> -->
+				</ul>
+			</div>
+		</div>
+
+		<!-- 内容主体区域 -->
+		<div class="layui-body">
+			<div class="layui-tab" id="layui_tab" style="margin:0px;">
+				<ul class="layui-tab-title" id="showTab">
+					<li _id="-1" class="layui-this"><span onclick="admin.cuurTabClick('-1','首页','./basic/query.html',this)">首页</span><i class="layui-icon layui-icon-home"></i></li>
+				</ul>
+				<div class="layui-tab-content" id="layui_tab_content" style="padding:10px 0px 0px 5px;">
+					<iframe id="layui_show" src="./basic/query.html" width="100%" height="100%" scrolling="auto" frameborder="0"></iframe> 
+				</div>
+			</div>
+		</div>
+		
+		<div class="layui-footer">
+		    <p>© 2018 <a href="/">layui.com</a> MIT license</p>
+		    <p>
+		      <a href="http://fly.layui.com/case/2018/" target="_blank">案例</a>
+		      <a href="http://fly.layui.com/jie/3147/" target="_blank">众筹</a>
+		      <a href="mailto:xianxin@layui-inc.com">联系</a>
+		      <a href="https://github.com/sentsin/layui/" target="_blank" rel="nofollow">GitHub</a>
+		      <a href="https://gitee.com/sentsin/layui" target="_blank" rel="nofollow">码云</a>
+		      <a href="http://fly.layui.com/jie/2461/" target="_blank">微信公众号</a>
+		    </p>
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	var admin={
+		initPage:function(){
+			//查询菜单分类
+			/* layer.load(3);
+			common.ajaxCall(common.excuteUrl("/menuTypeController/findByList.do"),{},function(ret){
+				layer.closeAll("loading");
+				if(ret.statusCode==0){
+					if(common.isNotBlank(ret.result)){
+						var str="";
+						for(var item in ret.result){
+							str+='<li class="layui-nav-item"><a href="javascript:;">'+ret.result[item].typeName+'</a></li>';
+						}
+						$("#layui-nav").html(str);
+					}
+				}else{
+					layer.alert(ret.statusMessage,{icon: 2});
+				}
+			}); */
+			
+			//加载左边菜单
+			layer.load(3);
+			common.ajaxCall(common.excuteUrl("/menuController/findPermissionMenu.do"),{},function(ret){
+				layer.closeAll("loading");
+				if(ret.statusCode==0){
+					//console.log(ret);
+					if(common.isNotBlank(ret.result)){
+						var list1=ret.result.list1;
+						var list2=ret.result.list2;
+						var str="";
+						if(common.isNotBlank(list1) && list1.length>0){
+							for(var i=0;i<list1.length;i++){
+								if(i==0){
+									str+='<li class="layui-nav-item layui-nav-itemed">';
+								}else{
+									str+='<li class="layui-nav-item">';
+									
+								}
+								str+='<a href="javascript:;" onclick="admin.navItem(this)">';
+								str+='<i class="layui-icon '+list1[i].css+'"></i>';
+								str+='<cite>'+list1[i].menuName+'</cite>'; 
+								str+='<span class="layui-nav-more"></span>';
+								str+='</a><dl class="layui-nav-child">';
+								for(var k=0;k<list2.length;k++){
+									if(common.isNotBlank(list2[k])){
+										if(list1[i].menuId==list2[k].parentId){
+											str+='<dd>';
+											str+='<a href="javascript:;" onclick="admin.addTab(\''+list2[k].menuId+'\',\''+list2[k].menuName+'\',\''+list2[k].url+'\')">'+list2[k].menuName+'</a>';
+											str+='</dd>';
+										}
+									}
+								}
+								str+='</dl></li>';
+							}
+						}
+					}
+					//console.log(str);
+					$("#layui_nav").html(str);
+				}else{
+					layer.alert(ret.statusMessage,{icon: 2});
+				}
+			});
+			
+		},
+		addTab:function(id,text,url){
+			var ulElement=$("#showTab");
+			
+			//移除选中样式
+			ulElement.find("li").removeClass("layui-this");
+			
+			var flag=1;
+			ulElement.find("li").each(function(index){
+				var _this=$(this);
+				if(id==_this.attr("_id")){
+					_this.addClass("layui-this");
+					$("#layui_show").attr("src",url+"?time="+common.guid());
+					flag=-1;
+					return;
+				} 
+			});
+			
+			//判断是否已经打开 如果已经打开则刷新
+			if(flag==-1 || flag=='-1'){
+				return;
+			}
+			
+			//添加tab
+			var html='<li _id="'+id+'" class="layui-this layui-tab-close"><span onclick="admin.cuurTabClick(\''+id+'\',\''+text+'\',\''+url+'\',this)">'+text+'</span><i class="layui-icon layui-unselect layui-tab-close" onclick="admin.delTab(\''+id+'\',\''+text+'\',\''+url+'\',this)">ဆ</i></li>';
+			$(html).appendTo($("#showTab"));
+			
+			$("#layui_show").attr("src",url+"?time="+common.guid());
+			//设置高度
+			$("#layui_tab").attr("height",$(".layui-body").height()-44);
+			$("#layui_show").attr("height",$(".layui-body").height()-85);
+		},
+		
+		//点击当前tab
+		cuurTabClick:function(id,text,url,obj){
+			var ulElement=$("#showTab");
+			//移除选中样式
+			ulElement.find("li").removeClass("layui-this");
+			//添加选中样式
+			$(obj).addClass("layui-this");
+			
+			$("#layui_show").attr("src",url+"?time="+common.guid());
+		},
+		
+		//删除
+		delTab:function(id,text,url,obj){
+			var ulElement=$("#showTab");
+			var el=$(obj);
+			//标签 是否active
+			var lay_this=$(obj).parent().attr("class");
+			if(lay_this.indexOf("layui-this")!= -1){
+				var next=$(obj).parent().next();
+				if(next.length>0){
+					$(obj).next().addClass("layui-this");
+					$(obj).next().find("span").click();
+				}else{
+					if($(obj).parent().prev().length>0){
+						$(obj).parent().prev().addClass("layui-this");
+						$(obj).parent().prev().find("span").click();
+					}else{
+						$("#layui_show").attr("src","./basic/query.html?time="+common.guid());
+					}
+				}
+				el.parent().remove();
+			}else{
+				el.parent().remove();
+			}
+		},
+		
+		//左侧导航
+		navItem:function(obj){
+			$("#layui_nav").find("li").removeClass("layui-nav-itemed");
+			$(obj).parent().addClass("layui-nav-itemed");
+		},
+		
+		//退出
+		loginOut:function(){
+			layer.confirm("确定要退出吗",{
+				icon:3,
+				btn: ['确认','取消']//按钮
+			},function(index,lay){
+				common.ajaxCall(common.excuteUrl("/userController/userloginOut.do"),{},function(ret){
+					if(ret.statusCode==0){
+						layer.close(index);
+						common.winHref("/hotel/index.html","?time="+common.guid());
+					}else{
+						layer.alert(ret.statusMessage,{icon: 2});
+					}
+				});
+			},function(index,lay){
+				layer.close(index);
+			});
+		}
+		
+	}
+	
+	//初始加载
+	$(document).ready(function() {
+		$("#layui_tab").attr("height",($(".layui-body").height()-44));
+		$("#layui_show").attr("height",$(".layui-body").height()-65);
+		admin.initPage();
+	});
+</script>

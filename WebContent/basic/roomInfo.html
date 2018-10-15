@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="renderer" content="webkit"><meta http-equiv="X-UA-Compatible" content="IE=9,IE=10" />
+<meta http-equiv="Expires" content="0"><meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-store">
+<title>房间信息</title>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/layui.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/modules/layer/default/layer.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/metro/easyui.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/icon.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/color.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/table.css">
+<link rel="stylesheet" type="text/css" href="../style/common.css" />
+<link rel="stylesheet" type="text/css" href="../style/style.css">
+<script type="text/javascript" src="../script/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../script/layui/layui.js"></script>
+<script type="text/javascript" src="../script/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="../script/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../script/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="./js/roomInfo.js"></script>
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+  <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+  <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+	<div class="layui-card">
+		 <div class="layui-row">
+			<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer" style="width:100%">
+			   <tbody>
+			   	   <tr>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">房门号:</label></td>
+			         <td class="width-10"><input type="text" class="layui-input" id="param0" /></td>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">价格区间:</label></td>
+			         <td class="width-10" >
+			         	<input type="text" class="layui-input" id="param1" style="width:49%;display: inline;" />-<input type="text" class="layui-input" style="width:48%;display: inline;" id="param2"  />
+			         </td>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">房间类型:</label></td>
+			         <td class="width-10"><input type="text" class="layui-input" id="param3" /></td>
+			      </tr>
+			      <tr>
+			      	 <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">房间状态 :</label></td>
+			         <td class="width-10"><input type="text" class="layui-input" id="param4" /></td>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">楼层:</label></td>
+			         <td class="width-10"><input type="text" id="param5" class="layui-input" /></td>
+			         <td colspan="2">
+			         	<div class="layui-inline">
+						    <button class="layui-btn layui-btn-sm" onclick="roomInfo.query()"><i class="layui-icon">&#xe615;</i>查询</button>
+						    <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="roomInfo.reset()"><i class="layui-icon">&#xe640;</i>重置</button>
+						    <button class="layui-btn layui-btn-warm layui-btn-sm"><i class="layui-icon">&#xe669;</i>刷新</button>
+						  </div>
+			         </td>
+			      </tr>
+			    </tbody>
+			  </table>
+		</div>
+        <!--  工具  -->
+		<div class="layui-row">
+			<div class="layui-col-md9">
+		     	<div class="layui-form-item" style="margin:5px 0px;">
+				  <div class="layui-inline">
+				    <button class="layui-btn layui-btn-sm" onclick="roomInfo.tab('add','')"><i class="layui-icon">&#xe654;</i>新增</button>
+				    <button class="layui-btn layui-btn-normal layui-btn-sm"><i class="layui-icon">&#xe7a0;</i>导出</button>
+				  </div>
+				</div>	
+		    </div>
+		</div>
+		<!-- 表格 -->
+		<div class="layui-form">
+			<table class="layui-table" id="roomGrid"></table>
+		</div>
+	</div>
+	
+	<!-- 编辑页面 -->
+	<div class="layui-fluid" id="roomForm" style="display: none;">
+		<input type="hidden" id="roomId" />
+		<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer" style="width:100%">
+		   <tbody>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">房间号:</label></td>
+		         <td class="width-35"><input type="text" id="roomNumber" class="layui-input" /></td>
+		         <td class="width-15 active1"><label class="pull-right">房间类型:</label></td>
+		         <td class="width-35"><input type="text" id="roomType" class="layui-input" /></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">楼层:</label></td>
+		         <td class="width-35"><input type="text" id="floor" class="layui-input" /></td>
+		         <td class="width-15 active1"><label class="pull-right">房间状态:</label></td>
+		         <td class="width-35"><input type="text" id="roomState" class="layui-input" /></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">房间电话:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" id="roomTel" class="layui-input" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">房栋号:</label></td>
+		         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="houseNumber" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">房间价格:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" id="roomPrice" class="layui-input" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">房间押金:</label></td>
+		         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="deposit" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">房间面积:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" id="roomAear" class="layui-input" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">客户经理:</label></td>
+		         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="custManager" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">是否可用:</label></td>
+		         <td class="width-35"><input type="text" class="layui-input" id="enabledFlag" /></td>
+		         <td class="width-15 active1"><label class="pull-right">排序标识:</label></td>
+		         <td class="width-35"><input type="text" id="orderFlag" class="layui-input" /></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">房间配置:</label></td>
+		        <!--  <td class="width-35" colspan="3"><span class="help-inline"><input type="text" class="layui-input" id="roomConfig" /></span></td> -->
+		         <td class="width-35" colspan="3">
+		         	<span class="help-inline" id="roomConfigDiv">
+		         	</span>
+		         </td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">房间描述:</label></td>
+		         <td class="width-35" colspan="3"><textarea  placeholder="房间描述" class="layui-textarea" id="roomDesc"></textarea></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">备注:</label></td>
+		         <td class="width-35" colspan="3"><textarea  placeholder="备注" class="layui-textarea" id="remark"></textarea></td>
+		      </tr>
+		    </tbody>
+		  </table>
+	</div>
+</body>
+</html>

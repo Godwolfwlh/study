@@ -1,0 +1,400 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="X-UA-Compatible" content="IE=9,IE=10" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-store" />
+<title>订房信息</title>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/layui.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/modules/layer/default/layer.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/modules/laydate/default/laydate.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/metro/easyui.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/table.css">
+<link rel="stylesheet" type="text/css" href="../style/common.css" />
+<link rel="stylesheet" type="text/css" href="../style/style.css">
+<script type="text/javascript" src="../script/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../script/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="../script/layui/lay/modules/laydate.js"></script>
+<script type="text/javascript" src="../script/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../script/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="./js/occupancy.js"></script>
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+  <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+  <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+	<div class="layui-card">
+		 <div class="layui-row">
+			<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer" style="width:100%">
+			   <tbody>
+			   	  <tr>
+			      	 <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">客户名称 :</label></td>
+			         <td class="width-10"><input type="text" class="layui-input" id="param0" /></td>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">身份证号 :</label></td>
+			         <td class="width-10"><input type="text" id="param1" class="layui-input" /></td>
+			      	 <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">订房状态 :</label></td>
+			         <td class="width-10"><input type="text" class="layui-input" id="param2" /></td>
+			      	 <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">价格区间:</label></td>
+			         <td class="width-10" >
+			         	<input type="text" class="layui-input" id="param3" style="width:49%;display: inline;" />-<input type="text" class="layui-input" style="width:48%;display: inline;" id="param4"  />
+			         </td>
+			      </tr>
+			      <tr>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">房间号 :</label></td>
+			         <td class="width-10"><input type="text" id="param5" class="layui-input" /></td>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">入住日期起止:</label></td>
+			         <td class="width-10" >
+			         	<input type="text" class="layui-input" id="param6" style="width:49%;display: inline;" />-<input type="text" class="layui-input" style="width:48%;display: inline;" id="param7"  />
+			         </td>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">缴费状态:</label></td>
+			         <td class="width-10"><input type="text" id="param8" class="layui-input" /></td>
+			         <td colspan="2">
+			         	<div class="layui-inline">
+						    <button class="layui-btn layui-btn-sm" onclick="occupancy.query()"><i class="layui-icon">&#xe615;</i>查询</button>
+						    <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="occupancy.reset()"><i class="layui-icon">&#xe640;</i>重置</button>
+						    <button class="layui-btn layui-btn-warm layui-btn-sm"><i class="layui-icon">&#xe669;</i>刷新</button>
+						  </div>
+			         </td>
+			      </tr>
+			    </tbody>
+			  </table>
+		</div>
+        <!--  工具  -->
+		<div class="layui-row">
+			<div class="layui-col-md9">
+		     	<div class="layui-form-item" style="margin:5px 0px;">
+				  <div class="layui-inline">
+				    <button class="layui-btn layui-btn-sm" onclick="occupancy.tab('add','')"><i class="layui-icon">&#xe654;</i>新增</button>
+				    <button class="layui-btn layui-btn-normal layui-btn-sm"><i class="layui-icon">&#xe7a0;</i>导出</button>
+				  </div>
+				</div>	
+		    </div>
+		</div>
+		<!-- 表格 -->
+		<div class="layui-form">
+			<table class="layui-table" id="occupancyGrid"></table>
+		</div>
+	</div>
+	
+	<!-- 编辑页面 -->
+	<div class="layui-fluid" style="display: none;" id="occupancyFormEdit">
+		<fieldset class="layui-elem-field">
+		  <legend>客户信息</legend>
+		  <div class="layui-field-box" id="custForm">
+		  		<input type="hidden" id="custId" />
+				<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer" style="width:100%">
+				   <tbody>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">客户名称:</label></td>
+				         <td class="width-35"><input type="text" id="custName" class="layui-input" style="cursor: pointer;" ondblclick="occupancy.selectCust()" /></td>
+				         <td class="width-15 active1"><label class="pull-right">联系电话:</label></td>
+				         <td class="width-35"><input type="text" id="linkPhone" class="layui-input" /></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">身份证:</label></td>
+				         <td class="width-35"><input type="text" id="cardNumber" class="layui-input" /></td>
+				         <td class="width-15 active1"><label class="pull-right">出生日期:</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" id="birthDate" class="layui-input" readonly="readonly" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">性别:</label></td>
+				         <td class="width-35">
+				         	<input type="text" id="genderName" class="layui-input" readonly="readonly" />
+				         	<input type="hidden" id="gender" />
+				         </td>
+				         <td class="width-15 active1"><label class="pull-right">年龄:</label></td>
+				         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="age" readonly="readonly" /></span></td>
+				      </tr>
+				       <tr>
+				         <td class="width-15 active1"><label class="pull-right">联系地址:</label></td>
+				         <td class="width-35" colspan="3"><span class="help-inline"><input type="text" id="address" class="layui-input" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">备注:</label></td>
+				         <td class="width-35" colspan="3"><textarea  placeholder="备注" class="layui-textarea" id="custRemark"></textarea></td>
+				      </tr>
+					</tbody>
+				</table>
+			</div>
+		</fieldset>
+		<fieldset class="layui-elem-field">
+		  <legend>入住信息</legend>
+		  <div class="layui-field-box" id="occupancyForm">
+		  		<input type="hidden" id="pancyId" />
+				<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer" style="width:100%">
+				   <tbody>
+				   	 <tr>
+				         <td class="width-15 active1"><label class="pull-right">选择房间:</label></td>
+				         <td class="width-35">
+				         	<input type="text" id="roomNumber" class="layui-input" style="cursor: pointer;" ondblclick="occupancy.selectRoom();" />
+				         	<input type="hidden" id="roomId" />
+				         </td>
+				         <td class="width-15 active1"><label class="pull-right">房间价格(元):</label></td>
+				         <td class="width-35"><input type="text" id="roomPrice" class="layui-input" /></td>
+				      </tr>
+				      <tr>
+				        <td class="width-15 active1"><label class="pull-right">订房状态:</label></td>
+				         <td class="width-35"><input type="text" id="pancyState" class="layui-input" /></td>
+				         <td class="width-15 active1"><label class="pull-right">排序标识:</label></td>
+				         <td class="width-35"><input type="text" id="orderFlag" class="layui-input" /></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">入住时间:</label></td>
+				         <td class="width-35"><input type="text" id="checkInDate" class="layui-input" /></td>
+				         <td class="width-15 active1"><label class="pull-right">退房时间:</label></td>
+				         <td class="width-35"><input type="text" id="checkOutDate" class="layui-input" /></td>
+				      </tr>
+				       <tr>
+				         <td class="width-15 active1"><label class="pull-right">入住天数:</label></td>
+				         <td class="width-35"><input type="text" id="prepaidNumber" class="layui-input" /></td>
+				         <td class="width-15 active1"><label class="pull-right">折扣价:</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" id="discount" class="layui-input" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">押金(元):</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="deposit" /></span></td>
+				         <td class="width-15 active1"><label class="pull-right">应付金额(元):</label></td>
+				         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="prepaidAmount" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">付款方式:</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" id="paidType" class="layui-input" /></span></td>
+				         <td class="width-15 active1"><label class="pull-right">实收金额(元):</label></td>
+				         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="amountCollect" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">备注:</label></td>
+				         <td class="width-35" colspan="3"><textarea  placeholder="备注" class="layui-textarea" id="remark"></textarea></td>
+				      </tr>
+				    </tbody>
+				</table>
+			</div>
+		</fieldset>
+	</div>
+	
+	<!-- 客户表格 -->
+	<div class="layui-form" id="showCustomerGrid" style="display: none">
+		<table class="layui-table" id="customerGrid"></table>
+	</div>
+	
+	<!-- 房间表格 -->
+	<div class="layui-form" id="showRoomGrid" style="display: none">
+		<table class="layui-table" id="roomGrid"></table>
+	</div>
+	
+	<!-- 退房信息 -->
+	<div class="layui-fluid" id="tfForm" style="display: none;">
+		<input type="hidden" id="pancyId1" />
+		<input type="hidden" id="custId1" />
+		<input type="hidden" id="roomId1" />
+		<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer" style="width:100%">
+		   <tbody>
+		   	 <tr>
+		         <td class="width-15 active1"><label class="pull-right">入住时间:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" id="checkInDate1" class="layui-input" readonly="readonly" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">退房时间:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" id="checkOutDate1" class="layui-input" readonly="readonly" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">房号:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="roomNumber1" readonly="readonly" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">入住天数:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="prepaidNumber1" readonly="readonly" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">房间价格(元):</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="roomPrice1" readonly="readonly" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">押金(元):</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="deposit1" readonly="readonly" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">房间价格(元):</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="roomPrice1" readonly="readonly" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">押金(元):</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="deposit1" readonly="readonly" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">折扣:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="roomPrice13" readonly="readonly" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">实收金额(元):</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="amountCollect1" readonly="readonly" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">入住时长:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="zz" readonly="readonly" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">退款金额:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" id="amountOwe1" class="layui-input" /></span></td>
+		      </tr>
+		    </tbody>
+		</table>
+	</div>
+	
+	<!-- 入住信息 -->
+	<div class="layui-fluid" id="rzForm" style="display: none;">
+		<input type="hidden" id="pancyId2" />
+		<input type="hidden" id="custId2" />
+		<input type="hidden" id="roomId2" />
+		<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer" style="width:100%">
+		   <tbody>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">入住时间:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" id="checkInDate2" class="layui-input" readonly="readonly" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">退房时间:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" id="checkOutDate2" class="layui-input" readonly="readonly" /></span></td>
+		      </tr>
+		     <tr>
+		         <td class="width-15 active1"><label class="pull-right">房号:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="roomNumber2" readonly="readonly" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">入住天数:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="prepaidNumber2" readonly="readonly" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">房间价格(元):</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="roomPrice2" readonly="readonly" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">押金(元):</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="deposit2" readonly="readonly" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">付款方式:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" id="paidType2" class="layui-input" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">备注:</label></td>
+		         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="remark2" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">应收金额(元):</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="prepaidAmount2" readonly="readonly" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">实收金额(元):</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="amountCollect2" /></span></td>
+		      </tr>
+		    </tbody>
+		</table>
+	</div>
+	
+	<!-- 更换房间页面 -->
+	<div class="layui-fluid" style="display: none;" id="changeRoomForm">
+		<fieldset class="layui-elem-field">
+		  <legend>原订单信息</legend>
+		  <div class="layui-field-box" id="custRoomForm4">
+		  		<input type="hidden" id="custId4" />
+		  		<input type="hidden" id="roomId4" />
+		  		<input type="hidden" id="pancyId4" />
+				<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer" style="width:100%">
+				   <tbody>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">客户名称:</label></td>
+				         <td class="width-35"><input type="text" id="custName4" class="layui-input" /></td>
+				         <td class="width-15 active1"><label class="pull-right">联系电话:</label></td>
+				         <td class="width-35"><input type="text" id="linkPhone4" class="layui-input" /></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">身份证:</label></td>
+				         <td class="width-35"><input type="text" id="cardNumber4" class="layui-input" /></td>
+				         <td class="width-15 active1"><label class="pull-right">出生日期:</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" id="birthDate4" class="layui-input" readonly="readonly" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">性别:</label></td>
+				         <td class="width-35">
+				         	<input type="text" id="gender4" class="layui-input" readonly="readonly" />
+				         </td>
+				         <td class="width-15 active1"><label class="pull-right">年龄:</label></td>
+				         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="age4" readonly="readonly" /></span></td>
+				      </tr>
+				       <tr>
+				         <td class="width-15 active1"><label class="pull-right">联系地址:</label></td>
+				         <td class="width-35" colspan="3"><span class="help-inline"><input type="text" id="address4" class="layui-input" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">房间号:</label></td>
+				         <td class="width-35">
+				         	<input type="text" id="roomNumber4" class="layui-input" />
+				         </td>
+				         <td class="width-15 active1"><label class="pull-right">房间价格(元):</label></td>
+				         <td class="width-35"><input type="text" id="roomPrice4" class="layui-input" /></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">入住时间:</label></td>
+				         <td class="width-35"><input type="text" id="checkInDate4" class="layui-input" /></td>
+				         <td class="width-15 active1"><label class="pull-right">退房时间:</label></td>
+				         <td class="width-35"><input type="text" id="checkOutDate4" class="layui-input" /></td>
+				      </tr>
+				       <tr>
+				         <td class="width-15 active1"><label class="pull-right">入住天数:</label></td>
+				         <td class="width-35"><input type="text" id="prepaidNumber4" class="layui-input" /></td>
+				         <td class="width-15 active1"><label class="pull-right">折扣价:</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" id="discount4" class="layui-input" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">押金(元):</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="deposit4" /></span></td>
+				         <td class="width-15 active1"><label class="pull-right">应付金额(元):</label></td>
+				         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="prepaidAmount4" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">付款方式:</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" id="paidType4" class="layui-input" /></span></td>
+				         <td class="width-15 active1"><label class="pull-right">实收金额(元):</label></td>
+				         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="amountCollect4" /></span></td>
+				      </tr>
+					</tbody>
+				</table>
+			</div>
+		</fieldset>
+		<fieldset class="layui-elem-field">
+		  <legend>选择更换房间</legend>
+		  <div class="layui-field-box" id="changeRoom">
+		  		<input type="hidden" id="custId5" />
+				<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer" style="width:100%">
+				   <tbody>
+				   	 <tr>
+				         <td class="width-15 active1"><label class="pull-right">选择房间:</label></td>
+				         <td class="width-35">
+				         	<input type="text" id="roomNumber5" class="layui-input" style="cursor: pointer;" ondblclick="occupancy.selectRoom('change');" />
+				         	<input type="hidden" id="roomId5" />
+				         </td>
+				         <td class="width-15 active1"><label class="pull-right">房间价格(元):</label></td>
+				         <td class="width-35"><input type="text" id="roomPrice5" class="layui-input" /></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">入住时间:</label></td>
+				         <td class="width-35"><input type="text" id="checkInDate5" class="layui-input" /></td>
+				         <td class="width-15 active1"><label class="pull-right">退房时间:</label></td>
+				         <td class="width-35"><input type="text" id="checkOutDate5" class="layui-input" /></td>
+				      </tr>
+				       <tr>
+				         <td class="width-15 active1"><label class="pull-right">入住天数:</label></td>
+				         <td class="width-35"><input type="text" id="prepaidNumber5" class="layui-input" /></td>
+				         <td class="width-15 active1"><label class="pull-right">折扣价:</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" id="discount5" class="layui-input" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">押金(元):</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" class="layui-input" id="deposit5" /></span></td>
+				         <td class="width-15 active1"><label class="pull-right">应付金额(元):</label></td>
+				         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="prepaidAmount5" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">付款方式:</label></td>
+				         <td class="width-35"><span class="help-inline"><input type="text" id="paidType5" class="layui-input" /></span></td>
+				         <td class="width-15 active1"><label class="pull-right">实收金额(元):</label></td>
+				         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="amountCollect5" /></span></td>
+				      </tr>
+				      <tr>
+				         <td class="width-15 active1"><label class="pull-right">备注:</label></td>
+				         <td class="width-35" colspan="3"><textarea  placeholder="备注" class="layui-textarea" id="remark5"></textarea></td>
+				      </tr>
+				    </tbody>
+				</table>
+			</div>
+		</fieldset>
+	</div>
+</body>
+</html>

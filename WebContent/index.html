@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>登录界面</title>
+<link rel="stylesheet" type="text/css" href="./script/layui/css/modules/layer/default/layer.css"></link>
+<link href="style/index.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="./script/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="./script/layui/lay/modules/layer.js"></script>
+<script language="JavaScript" src="./script/cloud.js"></script>
+<script type="text/javascript" src="./script/common.js"></script>
+<script type="text/javascript" src="./index.js"></script>
+
+</head>
+<body onkeydown="keypress(event);" style="background-color:#1c77ac; /* background-image:url(../images/login/light.png); */ background-repeat:no-repeat; background-position:center top; overflow:hidden;">
+	<div id="mainBody">
+		<div id="cloud1" class="cloud"></div>
+		<div id="cloud2" class="cloud"></div>
+	</div>
+	<!-- <div class="logintop">
+		<span>教育网站管理系统</span>
+		<ul style="width: 80px;">
+			<li style="width: 80px; margin-top: 0px; font-weight: bold; color: #FFFFFF; cursor: pointer">返回首页</li>
+		</ul>
+	</div> -->
+	<div class="loginbody">
+		<div class="systemlogo">俐莱宾馆平台系统管理</div>
+		<div class="loginbox">
+			<ul>
+				<li><input type="text" id="staffNo" class="loginuser" value="admin" /></li>
+				<li><input type="password" id="pwd" class="loginpwd" value="123456" /></li>
+				<li><input id="captcha" type="text" class="logincaptcha" maxlength="4" /><img id="captchaimg" src="/hotel/VerifyCode/jpg" style="margin-left: -5px; cursor: hand; cursor: pointer;" width="80px" height="25px" onclick="refreshImg();" title="看不清，请点击换一张"></img></li>
+				<li><input id="loginbtn" type="button" class="loginbtn" value="登录" onclick="loginSys()" />&nbsp;&nbsp;&nbsp;&nbsp;<a class="lostpwd">忘记密码？</a></li>
+			</ul>
+		</div>
+	</div >
+	<div class="loginbm">版权所有： 2014-2017</div>
+</body>
+
+</html>

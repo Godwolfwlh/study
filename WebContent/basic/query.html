@@ -1,0 +1,742 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="renderer" content="webkit"><meta http-equiv="X-UA-Compatible" content="IE=9,IE=10" />
+<meta http-equiv="Expires" content="0"><meta http-equiv="Cache-Control" content="no-cache"><meta http-equiv="Cache-Control" content="no-store">
+<title>房间信息</title>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/layui.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/admin.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/modules/layer/default/layer.css"></link>
+<link rel="stylesheet" type="text/css" href="../style/common.css" />
+<link rel="stylesheet" type="text/css" href="../style/style.css" />
+<link rel="stylesheet" type="text/css" href="../style/pagination.css" />
+<script type="text/javascript" src="../script/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../script/layui/layui.js"></script>
+<script type="text/javascript" src="../script/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="../script/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../script/pagination.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="./js/query.js"></script>
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+  <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+  <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<style type="text/css">
+	.layui-field-title {
+	    margin: 10px 0 0px;
+	    border-width: 1px 0 0;
+	}
+	.content{
+		background-color:#f2f2f2 !important;
+		color:#666;
+	}
+	.show_hover{
+		position:absolute;
+		width:100%;
+		height: 30px;
+		background:#000; 
+		filter:alpha(opacity:30); 
+		opacity:0.3;  
+		-moz-opacity:0.3;
+		-khtml-opacity: 0.3
+	}
+</style>
+</head>
+<body>
+	<div class="layui-fluid">
+		<div class="layui-row">
+			<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer" style="width:100%" id="queryForm">
+			   <tbody>
+			      <tr>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">房门号:</label></td>
+			         <td class="width-10"><input type="text" class="layui-input" id="param0" /></td>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">价格区间:</label></td>
+			         <td class="width-10" ><input type="text" class="layui-input" style="width:49%;display: inline;" id="param1" />-<input type="text" class="layui-input" style="width:48%;display: inline;" id="param2" /></td>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">楼层:</label></td>
+			         <td class="width-10"><input type="text" class="layui-input" id="param5" /></td>
+			      </tr>
+			      <tr>
+			      	 <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">房间状态:</label></td>
+			         <td class="width-10"><input type="text" class="layui-input" id="param4" /></td>
+			         <td class="width-5 active1"><label class="pull-right" style="font-size: 16px;">房间类型:</label></td>
+			         <td class="width-10"><input type="text" class="layui-input" id="param3" /></td>
+			         <td colspan="2">
+			         	<div class="layui-inline">
+						    <button class="layui-btn layui-btn-sm" onclick="query.search();"><i class="layui-icon">&#xe615;</i>查询</button>
+						    <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe640;</i>重置</button>
+						    <button class="layui-btn layui-btn-warm layui-btn-sm" onclick="query.refresh();"><i class="layui-icon">&#xe669;</i>刷新</button>
+						  </div>
+			         </td>
+			      </tr>
+			    </tbody>
+			  </table>
+		</div>
+		<div class="layui-row layui-col-space15 content" id="content">
+	        <!-- <fieldset class="layui-elem-field layui-field-title"><legend style="color:#0668fa;">房间信息</legend></fieldset>
+			<div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span></p>
+		          		<p class="layui-inline">
+						    <button class="layui-btn layui-btn-primary layui-btn-xs"><i class="layui-icon">&#xe640;</i>重置</button>
+						    <button class="layui-btn layui-btn-warm layui-btn-xs"><i class="layui-icon">&#xe669;</i>刷新</button>
+		          	</p>
+		          </div>
+		        </div>
+		      </div>
+		      </div> -->
+		      <!-- <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">单人间<span class="layui-badge layui-bg-blue layuiadmin-badge">空闲</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">101房</p>
+		            <p>一楼<span class="layuiadmin-span-color">￥80<i class="layui-inline layui-icon layui-icon-flag"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">标准间<span class="layui-badge layui-bg-red layuiadmin-badge">入住</span></div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">102房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥100<i class="layui-inline layui-icon layui-icon-user"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		      </div>
+		      <div class="layui-col-sm6 layui-col-md2">
+		        <div class="layui-card">
+		          <div class="layui-card-header">豪华间<span class="layui-badge layui-bg-green layuiadmin-badge">预定</span>
+		          </div>
+		          <div class="layui-card-body layuiadmin-card-list">
+		            <p class="layuiadmin-big-font">103房</p>
+		            <p>一楼 <span class="layuiadmin-span-color">￥120<i class="layui-inline layui-icon layui-icon-dollar"></i></span>
+		            </p>
+		          </div>
+		        </div>
+		    </div>
+		    
+        </div> -->
+			
+		<!-- <div class="layui-row" style="border:1px solid #ccc;">
+			<fieldset class="layui-elem-field layui-field-title"><legend style="color:#0668fa;">一楼</legend></fieldset>
+			<div class="row_item bg_checkin">
+				<p class="row_item_img"><img onclick="query.tab('1')" alt="" src="../images/hotel/ruzhu.jpg" title="1001" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+				<p class="row_item_state">入住</p>
+			</div>
+			<div class="row_item bg_normal">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item bg_normal">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item bg_normal">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item bg_normal">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+		</div>
+		<div class="layui-row" style="border:1px solid #ccc;margin-top:5px;">
+			<fieldset class="layui-elem-field layui-field-title"><legend style="color:#0668fa;">二楼</legend></fieldset>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>双人间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>三人间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+		</div>
+		<div class="layui-row" style="border:1px solid #ccc;margin-top:5px;">
+			<fieldset class="layui-elem-field layui-field-title" style="color:#0668fa;"><legend>二楼</legend></fieldset>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>双人间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>三人间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+		</div>
+		<div class="layui-row" style="border:1px solid #ccc;margin-top:5px;">
+			<fieldset class="layui-elem-field layui-field-title" style="color:#0668fa;"><legend>四楼信息</legend></fieldset>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>双人间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>三人间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+		</div>
+		<div class="layui-row" style="border:1px solid #ccc;margin-top:5px;">
+			<fieldset class="layui-elem-field layui-field-title" style="color:#0668fa;"><legend>五楼信息</legend></fieldset>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>双人间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>三人间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+		</div>
+		<div class="layui-row" style="border:1px solid #ccc;margin-top:5px;">
+			<fieldset class="layui-elem-field layui-field-title" style="color:#0668fa;"><legend>六楼信息</legend></fieldset>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>双人间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>三人间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/ruzhu.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+			<div class="row_item">
+				<p class="row_item_img"><img alt="" src="../images/hotel/fangjian.jpg" title="" /></p>
+				<p class="row_item_price"><label>￥108元</label><label>单间</label></p>
+				<p class="row_item_roomnuber">1001号</p>
+			</div>
+		</div>
+		<div class="layui-row" style="border:1px solid #ccc;margin-top:5px;text-align: center;">
+			<div id="page" style="margin: 0px auto;"></div>
+		</div> -->
+	</div>
+	</div>
+	<div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-body">
+            <div id="wrap1"></div>
+          </div>
+        </div>
+      </div>
+	
+	
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="renderer" content="webkit"><meta http-equiv="X-UA-Compatible" content="IE=9,IE=10" />
+<meta http-equiv="Expires" content="0"><meta http-equiv="Cache-Control" content="no-cache"><meta http-equiv="Cache-Control" content="no-store">
+<title>菜单信息</title>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/layui.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/zTree_v3/css/zTreeStyle/zTreeStyle.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/modules/layer/default/layer.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/metro/easyui.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/icon.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/color.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/table.css">
+<link rel="stylesheet" type="text/css" href="../style/common.css" />
+<link rel="stylesheet" type="text/css" href="../style/style.css">
+<script type="text/javascript" src="../script/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../script/zTree_v3/js/jquery.ztree.all.js"></script>
+<script type="text/javascript" src="../script/layui/layui.js"></script>
+<script type="text/javascript" src="../script/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="../script/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../script/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="./js/menu.js"></script>
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+  <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+  <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+	<!-- 编辑页面 -->
+	<div class="layui-fluid" id="menuForm">
+		<input type="hidden" id="menuId" name="menuId" />
+		<input type="hidden" id="parentId" name="parentId" />
+		<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer">
+		   <tbody>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">菜单名称:</label></td>
+		         <td class="width-35"><input type="text" id="menuName" class="layui-input" /></td>
+		         <td class="width-15 active1"><label class="pull-right">URL路径:</label></td>
+		         <td class="width-35"><input type="text" id="url" class="layui-input" /></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">菜单分类:</label></td>
+		         <td class="width-35"><input type="text" id="menuTypeId" class="layui-input" /></td>
+		         <td class="width-15 active1"><label class="pull-right">所属上级:</label></td>
+		         <td class="width-35"><input type="text" id="parentName" class="layui-input" readonly="readonly" onclick="menu.selTree();" /></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">菜单样式:</label></td>
+		         <td class="width-35"><span class="help-inline"><input type="text" id="css" class="layui-input" /></span></td>
+		         <td class="width-15 active1"><label class="pull-right">是否系统菜单:</label></td>
+		         <td class="width-35"><span class="help-inline"> <input type="text" class="layui-input" id="isSysMenu" /></span></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">是否可用:</label></td>
+		         <td class="width-35"><input type="text" class="layui-input" id="enabledFlag" /></td>
+		         <td class="width-15 active1"><label class="pull-right">排序标识:</label></td>
+		         <td class="width-35"><input type="text" id="orderFlag" class="layui-input" /></td>
+		      </tr>
+		      <tr>
+		         <td class="width-15 active1"><label class="pull-right">备注:</label></td>
+		         <td class="width-35" colspan="3"><textarea name="desc" placeholder="请输入内容" class="layui-textarea" id="remark"></textarea></td>
+		      </tr>
+		    </tbody>
+		  </table>
+	</div>
+</body>
+</html>

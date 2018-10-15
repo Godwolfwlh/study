@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.basic.dao.CaseDao">
+
+	<!-- 实体映射 -->
+	<resultMap id="BaseResultMap" type="com.basic.entity.CaseBean">
+		<id column="CASE_ID" property="caseId" jdbcType="VARCHAR" />
+		<result column="ORDER_ID" property="orderId" jdbcType="VARCHAR" />
+		<result column="DISCOUNT" property="discount" jdbcType="FLOAT" />
+		<result column="ROOM_NUMBER" property="roomNumber" jdbcType="VARCHAR" />
+		<result column="PREPAID_AMOUNT" property="prepaidAmount" jdbcType="DECIMAL" />
+		<result column="RECEIPT_MONEY" property="receiptMoney" jdbcType="DECIMAL" />
+		<result column="ROOM_PRICE" property="roomPrice" jdbcType="DECIMAL" />
+		<result column="DEPOSIT" property="deposit" jdbcType="DECIMAL" />
+		<result column="RECEIPT_DATE" property="receiptDate" jdbcType="TIMESTAMP" />
+		<result column="RECEIPT_TYPE" property="receiptType" jdbcType="VARCHAR" />
+		<result column="RECEIPT_STATE" property="receiptState" jdbcType="VARCHAR" />
+		<result column="RETURN_MONEY" property="returnMoney" jdbcType="DECIMAL" />
+		<result column="AMOUNT_OWE" property="amountOwe" jdbcType="DECIMAL" />
+		<result column="RECEIPT_NAME" property="receiptName" jdbcType="VARCHAR" />
+		<result column="RECEIPT_ID" property="receiptId" jdbcType="VARCHAR" />
+		<result column="CUST_ID" property="custId" jdbcType="VARCHAR" />
+		<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		<result column="ORDER_FLAG" property="orderFlag" jdbcType="INTEGER" />
+		<result column="ENABLED_FLAG" property="enabledFlag" jdbcType="INTEGER" />
+		<result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<!-- 字段 -->
+	<sql id="Base_Column_List">
+		CASE_ID, ORDER_ID, DISCOUNT, DEPOSIT,PREPAID_AMOUNT, RECEIPT_MONEY, RECEIPT_DATE,RECEIPT_TYPE,
+		RECEIPT_STATE, RETURN_MONEY, AMOUNT_OWE, RECEIPT_NAME, CUST_ID, REMARK,ROOM_PRICE,RECEIPT_ID,
+		ROOM_NUMBER,ORDER_FLAG, ENABLED_FLAG, CREATE_BY, CREATE_DATE, UPDATE_BY,UPDATE_DATE
+	</sql>
+	
+	<!-- 根据ID查询 -->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select <include refid="Base_Column_List" /> from hotel_case where CASE_ID = #{caseId,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 删除 -->
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from hotel_case where CASE_ID = #{caseId,jdbcType=VARCHAR}
+	</delete>
+	
+	<!-- 逻辑删除 -->
+	<delete id="removeById" parameterType="java.lang.String">
+		update hotel_case  set ENABLED_FLAG='0' from hotel_case where CASE_ID = #{caseId,jdbcType=VARCHAR}
+	</delete>
+	
+	<!-- 插入语句 -->
+	<insert id="insertCase" parameterType="com.basic.entity.CaseBean">
+		insert into hotel_case (CASE_ID, ORDER_ID, DISCOUNT,PREPAID_AMOUNT, RECEIPT_MONEY, RECEIPT_DATE,
+			RECEIPT_TYPE, RECEIPT_STATE, RETURN_MONEY,AMOUNT_OWE, RECEIPT_NAME, CUST_ID,ROOM_NUMBER, 
+			REMARK, ORDER_FLAG,ENABLED_FLAG, CREATE_BY, CREATE_DATE,UPDATE_BY, UPDATE_DATE,DEPOSIT,ROOM_PRICE,RECEIPT_ID)
+		values (#{caseId,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR},#{discount,jdbcType=FLOAT},
+			#{prepaidAmount,jdbcType=DECIMAL}, #{receiptMoney,jdbcType=DECIMAL}, #{receiptDate,jdbcType=TIMESTAMP},
+			#{receiptType,jdbcType=VARCHAR}, #{receiptState,jdbcType=VARCHAR},#{returnMoney,jdbcType=DECIMAL},
+			#{amountOwe,jdbcType=DECIMAL}, #{receiptName,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR},
+			#{roomNumber,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},#{orderFlag,jdbcType=INTEGER},
+			#{enabledFlag,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+			#{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},#{deposit,jdbcType=DECIMAL},{roomPrice,jdbcType=DECIMA},#{receiptId,jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 活动更新 -->
+	<insert id="insertSelective" parameterType="com.basic.entity.CaseBean">
+		insert into hotel_case
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="caseId != null">
+				CASE_ID,
+			</if>
+			<if test="orderId != null">
+				ORDER_ID,
+			</if>
+			<if test="discount != null">
+				DISCOUNT,
+			</if>
+			<if test="deposit != null">
+				DEPOSIT,
+			</if>
+			<if test="roomPrice != null">
+				ROOM_PRICE,
+			</if>
+			<if test="prepaidAmount != null">
+				PREPAID_AMOUNT,
+			</if>
+			<if test="receiptMoney != null">
+				RECEIPT_MONEY,
+			</if>
+			<if test="receiptDate != null">
+				RECEIPT_DATE,
+			</if>
+			<if test="receiptType != null">
+				RECEIPT_TYPE,
+			</if>
+			<if test="receiptState != null">
+				RECEIPT_STATE,
+			</if>
+			<if test="returnMoney != null">
+				RETURN_MONEY,
+			</if>
+			<if test="amountOwe != null">
+				AMOUNT_OWE,
+			</if>
+			<if test="receiptName != null">
+				RECEIPT_NAME,
+			</if>
+			<if test="receiptId!= null">
+				RECEIPT_ID,
+			</if>
+			<if test="custId != null">
+				CUST_ID,
+			</if>
+			<if test="roomNumber!= null">
+				ROOM_NUMBER,
+			</if>
+			<if test="remark != null">
+				REMARK,
+			</if>
+			<if test="orderFlag != null">
+				ORDER_FLAG,
+			</if>
+			<if test="enabledFlag != null">
+				ENABLED_FLAG,
+			</if>
+			<if test="createBy != null">
+				CREATE_BY,
+			</if>
+			<if test="createDate != null">
+				CREATE_DATE,
+			</if>
+			<if test="updateBy != null">
+				UPDATE_BY,
+			</if>
+			<if test="updateDate != null">
+				UPDATE_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="caseId != null">
+				#{caseId,jdbcType=VARCHAR},
+			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="discount != null">
+				#{discount,jdbcType=FLOAT},
+			</if>
+			<if test="deposit != null">
+				#{deposit,jdbcType=DECIMAL},
+			</if>
+			<if test="roomPrice != null">
+				#{roomPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="prepaidAmount != null">
+				#{prepaidAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="receiptMoney != null">
+				#{receiptMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="receiptDate != null">
+				#{receiptDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="receiptType != null">
+				#{receiptType,jdbcType=VARCHAR},
+			</if>
+			<if test="receiptState != null">
+				#{receiptState,jdbcType=VARCHAR},
+			</if>
+			<if test="returnMoney != null">
+				#{returnMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="amountOwe != null">
+				#{amountOwe,jdbcType=DECIMAL},
+			</if>
+			<if test="receiptName != null">
+				#{receiptName,jdbcType=VARCHAR},
+			</if>
+			<if test="receiptId != null">
+				#{receiptId,jdbcType=VARCHAR},
+			</if>
+			<if test="custId != null">
+				#{custId,jdbcType=VARCHAR},
+			</if>
+			<if test="roomNumber != null">
+				#{roomNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="orderFlag != null">
+				#{orderFlag,jdbcType=INTEGER},
+			</if>
+			<if test="enabledFlag != null">
+				#{enabledFlag,jdbcType=INTEGER},
+			</if>
+			<if test="createBy != null">
+				#{createBy,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateBy != null">
+				#{updateBy,jdbcType=VARCHAR},
+			</if>
+			<if test="updateDate != null">
+				#{updateDate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 活动修改 -->
+	<update id="updateByIdSelective" parameterType="com.basic.entity.CaseBean">
+		update hotel_case
+		<set>
+			<if test="orderId != null">
+				ORDER_ID = #{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="discount != null">
+				DISCOUNT = #{discount,jdbcType=FLOAT},
+			</if>
+			<if test="deposit != null">
+				DEPOSIT = #{deposit,jdbcType=DECIMAL},
+			</if>
+			<if test="roomPrice != null">
+				ROOM_PRICE = #{roomPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="prepaidAmount != null">
+				PREPAID_AMOUNT = #{prepaidAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="receiptMoney != null">
+				RECEIPT_MONEY = #{receiptMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="receiptDate != null">
+				RECEIPT_DATE = #{receiptDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="receiptType != null">
+				RECEIPT_TYPE = #{receiptType,jdbcType=VARCHAR},
+			</if>
+			<if test="receiptState != null">
+				RECEIPT_STATE = #{receiptState,jdbcType=VARCHAR},
+			</if>
+			<if test="returnMoney != null">
+				RETURN_MONEY = #{returnMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="amountOwe != null">
+				AMOUNT_OWE = #{amountOwe,jdbcType=DECIMAL},
+			</if>
+			<if test="receiptName != null">
+				RECEIPT_NAME = #{receiptName,jdbcType=VARCHAR},
+			</if>
+			<if test="receiptId != null">
+				RECEIPT_ID = #{receiptId,jdbcType=VARCHAR},
+			</if>
+			<if test="custId != null">
+				CUST_ID = #{custId,jdbcType=VARCHAR},
+			</if>
+			<if test="roomNumber != null">
+				ROOM_NUMBER = #{roomNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				REMARK = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="orderFlag != null">
+				ORDER_FLAG = #{orderFlag,jdbcType=INTEGER},
+			</if>
+			<if test="enabledFlag != null">
+				ENABLED_FLAG = #{enabledFlag,jdbcType=INTEGER},
+			</if>
+			<if test="createBy != null">
+				CREATE_BY = #{createBy,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateBy != null">
+				UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+			</if>
+			<if test="updateDate != null">
+				UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where CASE_ID = #{caseId,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 根据ID修改  -->
+	<update id="updateById" parameterType="com.basic.entity.CaseBean">
+		update hotel_case
+		set ORDER_ID = #{orderId,jdbcType=VARCHAR},
+			DISCOUNT = #{discount,jdbcType=FLOAT},
+			PREPAID_AMOUNT = #{prepaidAmount,jdbcType=DECIMAL},
+			RECEIPT_MONEY = #{receiptMoney,jdbcType=DECIMAL},
+			RECEIPT_DATE = #{receiptDate,jdbcType=TIMESTAMP},
+			RECEIPT_TYPE = #{receiptType,jdbcType=VARCHAR},
+			RECEIPT_STATE = #{receiptState,jdbcType=VARCHAR},
+			RETURN_MONEY = #{returnMoney,jdbcType=DECIMAL},
+			AMOUNT_OWE = #{amountOwe,jdbcType=DECIMAL},
+			RECEIPT_NAME = #{receiptName,jdbcType=VARCHAR},
+			RECEIPT_ID = #{receiptId,jdbcType=VARCHAR},
+			CUST_ID = #{custId,jdbcType=VARCHAR},
+			ROOM_ID = #{roomId,jdbcType=VARCHAR},
+			REMARK = #{remark,jdbcType=VARCHAR},
+			ORDER_FLAG = #{orderFlag,jdbcType=INTEGER},
+			ENABLED_FLAG = #{enabledFlag,jdbcType=INTEGER},
+			CREATE_BY = #{createBy,jdbcType=VARCHAR},
+			CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+			UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+			UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+			ROOM_NUMBER = #{roomNumber,jdbcType=VARCHAR},
+			DEPOSIT = #{deposit,jdbcType=DECIMAL},
+			ROOM_PRICE = #{roomPrice,jdbcType=DECIMAL}
+		where CASE_ID = #{caseId,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 多表查询映射 -->
+	<resultMap id="CaseOrderCustResultMap" type="com.basic.entity.CaseBean" >
+		<result column="DISCOUNT" property="discount" jdbcType="FLOAT" />
+		<result column="PREPAID_AMOUNT" property="prepaidAmount" jdbcType="DECIMAL" />
+		<result column="RECEIPT_MONEY" property="receiptMoney" jdbcType="DECIMAL" />
+		<result column="RECEIPT_DATE" property="receiptDate" jdbcType="TIMESTAMP" />
+		<result column="RECEIPT_TYPE" property="receiptType" jdbcType="VARCHAR" />
+		<result column="RECEIPT_STATE" property="receiptState" jdbcType="VARCHAR" />
+		<result column="RETURN_MONEY" property="returnMoney" jdbcType="DECIMAL" />
+		<result column="AMOUNT_OWE" property="amountOwe" jdbcType="DECIMAL" />
+		<result column="RECEIPT_NAME" property="receiptName" jdbcType="VARCHAR" />
+	    <result column="ROOM_NUMBER" jdbcType="VARCHAR" property="roomNumber" />
+	    <result column="DEPOSIT" jdbcType="DECIMAL" property="deposit" />
+	    <result column="ROOM_PRICE" jdbcType="DECIMAL" property="roomPrice" />
+		<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		<result column="ORDER_FLAG" property="orderFlag" jdbcType="INTEGER" />
+		<result column="ENABLED_FLAG" property="enabledFlag" jdbcType="INTEGER" />
+		<result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+		<result property="createDateStr" column="createDateStr" />
+		<result property="updateDateStr" column="updateDateStr" />
+		<result property="createByName" column="createByName" />
+		<result property="updateByName" column="updateByName" />
+		
+	    <!-- 关联客户信息 -->
+	    <association property="orderBean" javaType="com.basic.entity.OrderBean">
+	    	<id column="ORDER_ID" property="orderId" jdbcType="VARCHAR" />
+		    <result column="CHECK_IN_DATE" property="checkInDate" jdbcType="TIMESTAMP" />
+		    <result column="CHECK_OUT_DATE" property="checkOutDate" jdbcType="TIMESTAMP" />
+		    <result column="PREPAID_NUMBER" property="prepaidNumber" jdbcType="INTEGER" />
+		    <result column="ORDER_STATE" property="orderState" jdbcType="VARCHAR" />
+		    <result column="PAY_STATE" property="payState" jdbcType="VARCHAR" />
+		    <result column="CHECK_IN_DATE_STR" property="checkInDateStr" jdbcType="VARCHAR" />
+	    	<result column="CHECK_OUT_DATE_STR" property="checkOutDateStr" jdbcType="VARCHAR" />
+	    </association>
+	    
+	    <!-- 关联客户信息 -->
+	    <association property="customerBean" javaType="com.basic.entity.CustomerBean"> 
+		   <!-- 客户自身的属性与数据库字段的映射 --> 
+		   <id column="CUST_ID" property="custId" jdbcType="VARCHAR" />
+		    <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
+		    <result column="CARD_NUMBER" property="cardNumber" jdbcType="VARCHAR" />
+		    <result column="LINK_PHONE" property="linkPhone" jdbcType="VARCHAR" />
+		    <result column="GENDER" property="gender" jdbcType="VARCHAR" />
+		    <result column="BIRTH_DATE" property="birthDate" jdbcType="VARCHAR" />
+		    <result column="AGE" property="age" jdbcType="VARCHAR" />
+		    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+		    <result column="LEAG_SCORE" property="leagScore" jdbcType="INTEGER" />
+		    <result column="IS_LEAGUER" property="isLeaguer" jdbcType="VARCHAR" />
+		    <result column="CUST_STATE" property="custState" jdbcType="VARCHAR" />
+		</association> 
+		
+	    <!-- 关联房间信息 -->
+	    <!-- <association property="roomInfoBean" javaType="com.basic.entity.RoomInfoBean"> 
+		   <id column="ROOM_ID" jdbcType="VARCHAR" property="roomId" />
+		    <result column="ROOM_NUMBER" jdbcType="VARCHAR" property="roomNumber" />
+		    <result column="ROOM_TYPE" jdbcType="VARCHAR" property="roomType" />
+		    <result column="FLOOR" jdbcType="VARCHAR" property="floor" />
+		    <result column="ROOM_STATE" jdbcType="VARCHAR" property="roomState" />
+		    <result column="ROOM_TEL" jdbcType="VARCHAR" property="roomTel" />
+		    <result column="CUST_MANAGER_ID" jdbcType="VARCHAR" property="custManagerId" />
+		    <result column="CUST_MANAGER" jdbcType="VARCHAR" property="custManager" />
+		    <result column="HOUSE_NUMBER" jdbcType="VARCHAR" property="houseNumber" />
+		    <result column="ROOM_PRICE" jdbcType="DECIMAL" property="roomPrice" />
+		    <result column="ROOM_AEAR" jdbcType="VARCHAR" property="roomAear" />
+		    <result column="ROOM_CONFIG" jdbcType="VARCHAR" property="roomConfig" />
+		    <result column="ROOM_DESC" jdbcType="VARCHAR" property="roomDesc" />
+		    <result column="DEPOSIT" jdbcType="DECIMAL" property="deposit" />
+		</association>  -->
+	</resultMap>
+	
+	<!-- 分页查询 -->
+	<select id="findByPage"  parameterType="java.util.Map" resultMap="CaseOrderCustResultMap">
+			SELECT t.DISCOUNT, t.PREPAID_AMOUNT, t.RECEIPT_MONEY, t.RECEIPT_DATE,t.RECEIPT_TYPE, c.DEPOSIT, 
+			t.RECEIPT_STATE, t.RETURN_MONEY, t.AMOUNT_OWE, t.RECEIPT_NAME, t.CUST_ID, t.ROOM_ID, t.REMARK,
+			t.ORDER_FLAG, t.ENABLED_FLAG, t.CREATE_BY, t.CREATE_DATE, t.UPDATE_BY,t.UPDATE_DATE,
+			a.ORDER_ID,a.CUST_ID AS ORDER_CUST_ID, a.ROOM_ID AS ORDER_ROOM_ID, a.CHECK_IN_DATE, 
+		    a.CHECK_OUT_DATE, a.PREPAID_NUMBER, a.ORDER_STATE, a.PAY_STATE, 
+			b.CUST_ID, b.CUST_NAME, b.CARD_NUMBER, b.LINK_PHONE, b.GENDER, b.BIRTH_DATE, b.AGE, b.ADDRESS, 
+			b.LEAG_SCORE, b.CUST_STATE, b.IS_LEAGUER,t.ROOM_NUMBER,t.ROOM_PRICE,t.DEPOSIT
+			DATE_FORMAT(a.CHECK_IN_DATE,'%Y-%m-%d %H:%i') CHECK_IN_DATE_STR,
+			DATE_FORMAT(a.CHECK_OUT_DATE,'%Y-%m-%d %H:%i') CHECK_OUT_DATE_STR,
+			(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=a.CREATE_BY) createByName,
+			(SELECT S.STAFF_NAME FROM SYS_USER S WHERE S.STAFF_ID=a.UPDATE_BY) updateByName,
+			DATE_FORMAT(a.CREATE_DATE,'%Y-%m-%d %H:%i') createDateStr,
+			DATE_FORMAT(a.UPDATE_DATE,'%Y-%m-%d %H:%i') updateDateStr
+			FROM hotel_case t,hotel_order a, hotel_customer b WHERE 1 = 1 
+			AND t.CASE_ID=b.CUST_ID AND t.ORDER_ID=a.ORDER_ID 
+	</select>
+	
+	<!-- 分页条数 -->
+	<select id="getResultCount"  parameterType="java.util.Map"  resultType="java.lang.Integer">
+			SELECT count(1) cnt FROM hotel_case t,hotel_order a, hotel_customer b WHERE 1 = 1 
+			AND t.CASE_ID=b.CUST_ID AND t.ORDER_ID=a.ORDER_ID 
+	</select>
+	
+	<!-- 获得最大序列号 -->
+	<select id="getMaxOrderFlag" parameterType="java.util.Map" resultType="java.lang.Integer" >
+		SELECT IFNULL((MAX(t.ORDER_FLAG)+1),1) flag FROM hotel_case t WHERE t.ENABLED_FLAG='1'
+	</select>
+	
+</mapper>

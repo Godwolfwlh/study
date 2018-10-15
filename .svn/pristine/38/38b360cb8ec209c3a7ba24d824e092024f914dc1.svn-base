@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="renderer" content="webkit"><meta http-equiv="X-UA-Compatible" content="IE=9,IE=10" />
+<meta http-equiv="Expires" content="0"><meta http-equiv="Cache-Control" content="no-cache"><meta http-equiv="Cache-Control" content="no-store">
+<title>角色菜单信息</title>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/layui.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/admin.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/layui/css/modules/layer/default/layer.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/metro/easyui.css" />
+<link rel="stylesheet" type="text/css" href="../script/zTree_v3/css/zTreeStyle/zTreeStyle.css"></link>
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/icon.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/themes/color.css" />
+<link rel="stylesheet" type="text/css" href="../script/easyui/table.css">
+<link rel="stylesheet" type="text/css" href="../style/common.css"></link>
+<script type="text/javascript" src="../script/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../script/layui/layui.js"></script>
+<script type="text/javascript" src="../script/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="../script/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../script/zTree_v3/js/jquery.ztree.all.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="./js/roleMenu.js"></script>
+<style type="text/css">
+	body,html{
+	    background-color: #f2f2f2;
+	    color: #666;
+	}
+	.layui-fluid{
+	    background-color: #f2f2f2;
+	    color: #666;
+	}
+	.layui-card-header {
+	    height: 42px;
+	    line-height: 42px;
+	    padding: 0 15px;
+	    border-bottom: 1px solid #f6f6f6;
+	    color: #333;
+	    border-radius: 2px 2px 0 0;
+	    font-size: 16px;
+	    font-weight: bold;
+	}
+</style>
+</head>
+<body>
+	<div class="layui-fluid">
+	    <div class="layui-row layui-col-space15">
+	      <div class="layui-col-md12">
+	        <div class="layui-row layui-col-space15">
+	          <div class="layui-col-md6">
+          		<div class="layui-card">
+	              <div class="layui-card-header">角色信息</div>
+	              	<div class="layui-card-body"><table class="layui-table" id="roleGrid"></table></div>
+	            </div>
+	          </div>
+	          <div class="layui-col-md6">
+          		<div class="layui-card">
+	              <div class="layui-card-header">分配菜单信息</div>
+	              	<div class="layui-card-body">
+	              	<table class="layui-table" id="menuGrid"></table>
+	              	</div>
+	            </div>
+	          </div>
+	        </div>
+        </div>
+    </div>
+  </div>
+	
+	
+	<!-- edit -->
+	<div class="layui-form" id="roleform" style="display: none">
+		<input type="hidden" id="roleId" />
+		<div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">角色名称</label>
+            <div class="layui-input-inline">
+              <input type="text" name="roleName" id="roleName" class="layui-input">
+            </div>
+          </div>
+         </div>
+         <div class="layui-form-item"> 
+	          <div class="layui-inline">
+	            <label class="layui-form-label">排序标识</label>
+	            <div class="layui-input-inline">
+	              <input type="text" id="orderFlag" class="layui-input">
+	            </div>
+	          </div>
+          </div>
+        <div class="layui-form-item">
+		    <label class="layui-form-label">是否可用</label>
+		    <div class="layui-input-inline">
+		      <input type="text" id="enabledFlag" />
+		    </div>
+		</div>
+        <div class="layui-form-item">
+          	<div class="layui-inline">
+	            <label class="layui-form-label">备注</label>
+	            <div class="layui-input-inline">
+	              <textarea placeholder="请输入内容" class="layui-textarea" id="remark"></textarea>
+	            </div>
+          	</div>
+        </div>
+	</div>
+	<div class="layui-fluid" id="settingRoleTree" style="display: none;">
+		<ul id="tree" class="ztree"></ul>
+	</div>
+	
+	<div class="layui-fluid" id="treeGridform" style="display: none;">
+		<table id="treeGrid" style="width:100%;"></table>
+	</div>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basic.dao.ReceiptHistoryDao">
+  <resultMap id="BaseResultMap" type="com.basic.entity.ReceiptBean">
+    <id column="RECEIPT_ID" jdbcType="VARCHAR" property="receiptId" />
+    <result column="DEPOSIT" jdbcType="DECIMAL" property="deposit" />
+    <result column="PANCY_ID" jdbcType="VARCHAR" property="pancyId" />
+    <result column="RECEIPT_MONEY" jdbcType="DECIMAL" property="receiptMoney" />
+    <result column="RECEIPT_DATE" jdbcType="TIMESTAMP" property="receiptDate" />
+    <result column="RECEIPT_NAME" jdbcType="VARCHAR" property="receiptName" />
+    <result column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+    <result column="ROOM_ID" jdbcType="VARCHAR" property="roomId" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="RECEIPT_STATE" jdbcType="VARCHAR" property="receiptState" />
+    <result column="ORDER_FLAG" jdbcType="INTEGER" property="orderFlag" />
+    <result column="ENABLED_FLAG" jdbcType="INTEGER" property="enabledFlag" />
+    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
+    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
+    <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    RECEIPT_ID, DEPOSIT, PANCY_ID, RECEIPT_MONEY, RECEIPT_DATE, RECEIPT_NAME, CUST_ID,RECEIPT_STATE, 
+    ROOM_ID, REMARK, ORDER_FLAG, ENABLED_FLAG, CREATE_BY, CREATE_DATE, UPDATE_BY, UPDATE_DATE
+  </sql>
+  
+  <select id="findReceiptHistoryById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from hotel_receipt_history where RECEIPT_ID = #{receiptId,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteReceiptHistoryById" parameterType="java.lang.String">
+    delete from hotel_receipt_history where RECEIPT_ID = #{receiptId,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="removeReceiptHistoryById" parameterType="java.lang.String">
+    UPDATE hotel_receipt_history SET ENABLED_FLAG = '0' where RECEIPT_ID = #{receiptId,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insertReceiptHistory" parameterType="com.basic.entity.ReceiptHistoryBean">
+    insert into hotel_receipt_history (RECEIPT_ID, DEPOSIT, PANCY_ID,RECEIPT_MONEY, 
+      RECEIPT_DATE, RECEIPT_NAME,CUST_ID, ROOM_ID, REMARK,ORDER_FLAG, ENABLED_FLAG,  
+      CREATE_BY,CREATE_DATE, UPDATE_BY, UPDATE_DATE,RECEIPT_STATE
+      )
+    values (#{receiptId,jdbcType=VARCHAR}, #{deposit,jdbcType=DECIMAL}, #{pancyId,jdbcType=VARCHAR}, 
+      #{receiptMoney,jdbcType=DECIMAL}, #{receiptDate,jdbcType=TIMESTAMP}, #{receiptName,jdbcType=VARCHAR}, 
+      #{custId,jdbcType=VARCHAR}, #{roomId,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{orderFlag,jdbcType=INTEGER}, #{enabledFlag,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},#{receiptState,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  
+  <insert id="insertHistorySelective" parameterType="com.basic.entity.ReceiptHistoryBean">
+    insert into hotel_receipt_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="receiptId != null">
+        RECEIPT_ID,
+      </if>
+      <if test="deposit != null">
+        DEPOSIT,
+      </if>
+      <if test="pancyId != null">
+        PANCY_ID,
+      </if>
+      <if test="receiptMoney != null">
+        RECEIPT_MONEY,
+      </if>
+      <if test="receiptDate != null">
+        RECEIPT_DATE,
+      </if>
+      <if test="receiptName != null">
+        RECEIPT_NAME,
+      </if>
+      <if test="custId != null">
+        CUST_ID,
+      </if>
+      <if test="roomId != null">
+        ROOM_ID,
+      </if>
+      <if test="remark != null">
+        REMARK,
+      </if>
+      <if test="orderFlag != null">
+        ORDER_FLAG,
+      </if>
+      <if test="enabledFlag != null">
+        ENABLED_FLAG,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE,
+      </if>
+      <if test="receiptState != null">
+        RECEIPT_STATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="receiptId != null">
+        #{receiptId,jdbcType=VARCHAR},
+      </if>
+      <if test="deposit != null">
+        #{deposit,jdbcType=DECIMAL},
+      </if>
+      <if test="pancyId != null">
+        #{pancyId,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptMoney != null">
+        #{receiptMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="receiptDate != null">
+        #{receiptDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiptName != null">
+        #{receiptName,jdbcType=VARCHAR},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="roomId != null">
+        #{roomId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderFlag != null">
+        #{orderFlag,jdbcType=INTEGER},
+      </if>
+      <if test="enabledFlag != null">
+        #{enabledFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiptState != null">
+        #{receiptState,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByIdHistorySelective" parameterType="com.basic.entity.ReceiptHistoryBean">
+    update hotel_receipt_history
+    <set>
+      <if test="deposit != null">
+        DEPOSIT = #{deposit,jdbcType=DECIMAL},
+      </if>
+      <if test="pancyId != null">
+        PANCY_ID = #{pancyId,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptMoney != null">
+        RECEIPT_MONEY = #{receiptMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="receiptDate != null">
+        RECEIPT_DATE = #{receiptDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiptName != null">
+        RECEIPT_NAME = #{receiptName,jdbcType=VARCHAR},
+      </if>
+      <if test="custId != null">
+        CUST_ID = #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="roomId != null">
+        ROOM_ID = #{roomId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderFlag != null">
+        ORDER_FLAG = #{orderFlag,jdbcType=INTEGER},
+      </if>
+      <if test="enabledFlag != null">
+        ENABLED_FLAG = #{enabledFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiptState != null">
+        RECEIPT_STATE = #{receiptState,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where RECEIPT_ID = #{receiptId,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateReceiptHistoryById" parameterType="com.basic.entity.ReceiptHistoryBean">
+    update hotel_receipt_history
+    set DEPOSIT = #{deposit,jdbcType=DECIMAL},
+      PANCY_ID = #{pancyId,jdbcType=VARCHAR},
+      RECEIPT_MONEY = #{receiptMoney,jdbcType=DECIMAL},
+      RECEIPT_DATE = #{receiptDate,jdbcType=TIMESTAMP},
+      RECEIPT_NAME = #{receiptName,jdbcType=VARCHAR},
+      CUST_ID = #{custId,jdbcType=VARCHAR},
+      ROOM_ID = #{roomId,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      ORDER_FLAG = #{orderFlag,jdbcType=INTEGER},
+      ENABLED_FLAG = #{enabledFlag,jdbcType=INTEGER},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      RECEIPT_STATE = #{receiptState,jdbcType=VARCHAR}
+    where RECEIPT_ID = #{receiptId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 分页查询 -->
+	<select id="findReceiptByHistoryPage" parameterType="Map" resultMap="BaseResultMap">
+		SELECT RECEIPT_ID, DEPOSIT, PANCY_ID, RECEIPT_MONEY, RECEIPT_DATE, RECEIPT_NAME, CUST_ID,ROOM_ID, REMARK,RECEIPTSTATE,  
+    	ORDER_FLAG, ENABLED_FLAG, CREATE_BY, CREATE_DATE, UPDATE_BY, UPDATE_DATE from hotel_receipt_history t where 1=1
+    	<if test="pageNow != null and pageSize != null">
+		  limit #{pageNow},#{pageSize}
+		</if>
+	</select>  
+	
+	<!-- 获得数量 -->
+	<select id="getReceiptHistoryCount" parameterType="Map" resultType="int">
+		select count(1) cnt from hotel_receipt_history where 1=1 AND ENABLED_FLAG='1'
+	</select>  
+	
+	<!-- 获得最大序列号 -->
+	<select id="getMaxOrderFlag" resultType="int" parameterType="Map">
+		SELECT IFNULL((MAX(t.ORDER_FLAG)+1),1) flag FROM hotel_receipt_history t WHERE t.ENABLED_FLAG='1'
+	</select>
+  
+  
+</mapper>
